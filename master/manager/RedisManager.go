@@ -1,7 +1,8 @@
-package master
+package manager
 
 import (
 	"crontab/common"
+	"crontab/master"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -32,15 +33,15 @@ func InitRedis() {
 			var (
 				url string
 			)
-			url = fmt.Sprintf("%s:%d", GConfig.RedisHost, GConfig.RedisPort)
-			c, err := redis.Dial("tcp", url, redis.DialPassword((GConfig.RedisPassword)))
+			url = fmt.Sprintf("%s:%d", master.GConfig.RedisHost, master.GConfig.RedisPort)
+			c, err := redis.Dial("tcp", url, redis.DialPassword((master.GConfig.RedisPassword)))
 			if err != nil {
 				return nil, err
 			}
 			return c, nil
 		},
-		MaxIdle:     GConfig.RedisMaxIdle,
-		MaxActive:   GConfig.RedisMaxActive,
+		MaxIdle:     master.GConfig.RedisMaxIdle,
+		MaxActive:   master.GConfig.RedisMaxActive,
 		IdleTimeout: 240 * time.Second,
 		Wait:        true,
 	}

@@ -1,7 +1,8 @@
-package master
+package manager
 
 import (
 	"crontab/common"
+	"crontab/master"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -29,12 +30,12 @@ func InitDB() (err error) {
 		db  *gorm.DB
 	)
 	url = fmt.Sprintf("%s:%s@(%s:%d)/%s?allowNativePasswords=true&parseTime=True&loc=Local",
-		GConfig.User, GConfig.Password, GConfig.Host, GConfig.Port, GConfig.Database)
-	if db, err = gorm.Open(GConfig.Dialect, url); err != nil {
+		master.GConfig.User, master.GConfig.Password, master.GConfig.Host, master.GConfig.Port, master.GConfig.Database)
+	if db, err = gorm.Open(master.GConfig.Dialect, url); err != nil {
 		return
 	}
-	db.DB().SetMaxIdleConns(GConfig.MaxIdleConns)
-	db.DB().SetMaxOpenConns(GConfig.MaxOpenConns)
+	db.DB().SetMaxIdleConns(master.GConfig.MaxIdleConns)
+	db.DB().SetMaxOpenConns(master.GConfig.MaxOpenConns)
 	GDB = &DBManager{DB: db}
 	return
 }

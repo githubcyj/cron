@@ -10,13 +10,6 @@ import (
 	"time"
 )
 
-type Base struct {
-	CreateUserId string    `json:"createUserId"`
-	CreateTime   time.Time `json:"createTime"`
-	UpdateUserId string    `json:"updateUserId"`
-	UpdateTime   time.Time `json:"updateTime"`
-}
-
 //http应答
 type HttpReply struct {
 	Errno int         `json:"errno"`
@@ -26,17 +19,20 @@ type HttpReply struct {
 
 //定时任务
 type Job struct {
-	Id             int    `json:"id"`
-	Name           string `json:"name"`                          //任务名
-	Type           int    `json:"type"`                          //任务类型 0：定时任务，1：延时任务
-	Command        string `json:"command"`                       //任务命令
-	JobId          string `json:"jobId"`                         //任务唯一id
-	CronExpr       string `json:"cronExpr"`                      //定时任务：定时任务执行时间
-	IsDel          int    `json:"isDel" gorm:"default:'0'`       //0：任务未删除，1：任务已删除
-	UpdateCount    int    `json:"updateCount" gorm:"default:'0'` //更新计数
-	TimerExecuter  string `json:"timerExecuter"`                 //延时任务执行时间
-	ExecutionCount int    `json:"executionCount"`                //执行次数
-	Base
+	Id             int       `json:"id"`
+	Name           string    `json:"name"`                          //任务名
+	Type           int       `json:"type"`                          //任务类型 0：定时任务，1：延时任务
+	Command        string    `json:"command"`                       //任务命令
+	JobId          string    `json:"jobId"`                         //任务唯一id
+	CronExpr       string    `json:"cronExpr"`                      //定时任务：定时任务执行时间
+	IsDel          int       `json:"isDel" gorm:"default:'0'`       //0：任务未删除，1：任务已删除
+	UpdateCount    int       `json:"updateCount" gorm:"default:'0'` //更新计数
+	TimerExecuter  string    `json:"timerExecuter"`                 //延时任务执行时间
+	ExecutionCount int       `json:"executionCount"`                //执行次数
+	CreateUserId   string    `json:"createUserId"`
+	CreateTime     time.Time `json:"createTime"`
+	UpdateUserId   string    `json:"updateUserId"`
+	UpdateTime     time.Time `json:"updateTime"`
 }
 
 func (job *Job) BeforeSave(scope *gorm.Scope) error {

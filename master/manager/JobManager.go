@@ -1,8 +1,9 @@
-package master
+package manager
 
 import (
 	"context"
 	"crontab/common"
+	"crontab/master"
 	"encoding/json"
 	"fmt"
 	"go.etcd.io/etcd/clientv3"
@@ -32,8 +33,8 @@ func InitJobManager() (err error) {
 	)
 
 	config = clientv3.Config{
-		Endpoints:   GConfig.EtcdIP,
-		DialTimeout: time.Duration(GConfig.EtcdTimeout) * time.Millisecond,
+		Endpoints:   master.GConfig.EtcdIP,
+		DialTimeout: time.Duration(master.GConfig.EtcdTimeout) * time.Millisecond,
 	}
 
 	if client, err = clientv3.New(config); err != nil {

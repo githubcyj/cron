@@ -2,8 +2,10 @@ package main
 
 import (
 	"crontab/master"
+	"crontab/master/manager"
 	"crontab/master/middleware"
 	"crontab/master/router"
+	"crontab/master/server"
 	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/redis"
@@ -35,41 +37,41 @@ func main() {
 	}
 
 	//启动日志管理器
-	if err = master.InitLogMgr(); err != nil {
+	if err = manager.InitLogMgr(); err != nil {
 		fmt.Println(err)
 	}
 
 	//启动http服务
-	if err = master.InitHttpApi(); err != nil {
+	if err = server.InitHttpApi(); err != nil {
 		fmt.Println(err)
 	}
 
 	//启动etcd管理器
-	if err = master.InitJobManager(); err != nil {
+	if err = manager.InitJobManager(); err != nil {
 		fmt.Println(err)
 	}
 
 	//启动mysql
-	if err = master.InitDB(); err != nil {
+	if err = manager.InitDB(); err != nil {
 		fmt.Println(err)
 	}
 
 	//启动redis
-	master.InitRedis()
+	manager.InitRedis()
 
-	if err = master.InitMaster(); err != nil {
+	if err = manager.InitMaster(); err != nil {
 		fmt.Println(err)
 	}
 
 	//启动消息队列
-	if err = master.InitMq(); err != nil {
+	if err = manager.InitMq(); err != nil {
 		fmt.Println(err)
 	}
 
 	//将任务放入redis中
-	go master.InitJobsToRedis()
+	go manager.InitJobsToRedis()
 
-	defer master.GMasterMgr.UnVoting()
+	defer manager.GMasterMgr.UnVoting()
 
 	//恢复中间件，任何panic都会被重启，并替代为500错误
 	app.Use(gin.Recovery())

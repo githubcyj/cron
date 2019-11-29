@@ -1,7 +1,10 @@
-package master
+package server
 
 import (
 	"crontab/common"
+	"crontab/master"
+	"crontab/master/manager"
+	"crontab/model"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -63,7 +66,7 @@ func handlerJobUpdate(resp http.ResponseWriter, req *http.Request) {
 	}
 
 	//更新数据库中的job
-	if err = GDB.UpdateJob(&job); err != nil {
+	if err = manager.GDB.UpdateJob(&job); err != nil {
 		goto ERR
 	}
 
@@ -71,17 +74,17 @@ func handlerJobUpdate(resp http.ResponseWriter, req *http.Request) {
 	jobs = append(jobs, &job)
 
 	//更新redis中的job
-	if err = GRedis.UpdateJob(jobs); err != nil {
+	if err = manager.GRedis.UpdateJob(jobs); err != nil {
 		goto ERR
 	}
 
 	//从redis中获取最新的job
-	if newJob, err = GRedis.GetSingleJob(job.JobId); err != nil {
+	if newJob, err = manager.GRedis.GetSingleJob(job.JobId); err != nil {
 		goto ERR
 	}
 
 	//更新etcd中的job
-	if _, err = GJobMgr.SaveJob(newJob); err != nil {
+	if _, err = manager.GJobMgr.SaveJob(newJob); err != nil {
 		goto ERR
 	}
 
@@ -117,23 +120,23 @@ func HandlerJobSave(c *gin.Context) {
 	}
 
 	//保存job进入数据库
-	if err = GDB.SaveJob(&job); err != nil {
+	if err = manager.GDB.SaveJob(&job); err != nil {
 		goto ERR
 	}
 
 	//保存job到redis中
-	if err = GRedis.AddJob(&job); err != nil {
+	if err = manager.GRedis.AddJob(&job); err != nil {
 		goto ERR
 	}
 	if job.Type == common.CRON_JOB_TYPE {
 		//将job注册到etcd中
-		if old, err = GJobMgr.SaveJob(&job); err != nil {
+		if old, err = manager.GJobMgr.SaveJob(&job); err != nil {
 			goto ERR
 		}
 	}
 
 	if job.Type == common.DELAY_JOB_TYPE {
-		if err = GMgMgrProduce.PushMq(&job); err != nil {
+		if err = manager.GMgMgrProduce.PushMq(&job); err != nil {
 			goto ERR
 		}
 	}
@@ -171,16 +174,16 @@ func HandlerJobDeleteForLogical(c *gin.Context) {
 	}
 
 	//更新数据库
-	if err = GDB.DeleteJobForLogic(deleteIds.Ids); err != nil {
+	if err = manager.GDB.DeleteJobForLogic(deleteIds.Ids); err != nil {
 		goto ERR
 	}
 
 	//根据id从reids中获取对应的job
 	for _, jobId = range deleteIds.Ids {
-		if job, err = GRedis.GetSingleJob(jobId); err != nil {
+		if job, err = manager.GRedis.GetSingleJob(jobId); err != nil {
 			if job == nil {
 				//从数据库中获取对应的job
-				if job, err = GDB.GetSingleJob(jobId); err != nil {
+				if job, err = manager.GDB.GetSingleJob(jobId); err != nil {
 					if job == nil {
 						continue
 					}
@@ -192,12 +195,12 @@ func HandlerJobDeleteForLogical(c *gin.Context) {
 	}
 
 	//更新redis
-	if err = GRedis.UpdateJob(jobs); err != nil {
+	if err = manager.GRedis.UpdateJob(jobs); err != nil {
 		goto ERR
 	}
 	if job.Type == common.CRON_JOB_TYPE {
 		//更新etcd
-		if err = GJobMgr.DeleteJobForLogic(deleteIds.Ids); err != nil {
+		if err = manager.GJobMgr.DeleteJobForLogic(deleteIds.Ids); err != nil {
 			goto ERR
 		}
 	}
@@ -232,17 +235,17 @@ func HandlerJobUpdate(c *gin.Context) {
 	}
 
 	//更新数据库
-	if err = GDB.UpdateJob(&job); err != nil {
+	if err = manager.GDB.UpdateJob(&job); err != nil {
 		goto ERR
 	}
 
 	//更新redis
-	if err = GRedis.UpdateSingleJob(&job); err != nil {
+	if err = manager.GRedis.UpdateSingleJob(&job); err != nil {
 		goto ERR
 	}
 
 	//更新etcd
-	if err = GJobMgr.UpdateJob(&job); err != nil {
+	if err = manager.GJobMgr.UpdateJob(&job); err != nil {
 		goto ERR
 	}
 
@@ -277,16 +280,16 @@ func HandlerJobRecover(c *gin.Context) {
 	}
 
 	//更新数据库
-	if err = GDB.RecoverJob(deleteIds.Ids); err != nil {
+	if err = manager.GDB.RecoverJob(deleteIds.Ids); err != nil {
 		goto ERR
 	}
 
 	//根据id从reids中获取对应的job
 	for _, jobId = range deleteIds.Ids {
-		if job, err = GRedis.GetSingleJob(jobId); err != nil {
+		if job, err = manager.GRedis.GetSingleJob(jobId); err != nil {
 			if job == nil {
 				//从数据库中获取对应的job
-				if job, err = GDB.GetSingleJob(jobId); err != nil {
+				if job, err = manager.GDB.GetSingleJob(jobId); err != nil {
 					if job == nil {
 						continue
 					}
@@ -298,12 +301,12 @@ func HandlerJobRecover(c *gin.Context) {
 	}
 
 	//更新redis
-	if err = GRedis.UpdateJob(jobs); err != nil {
+	if err = manager.GRedis.UpdateJob(jobs); err != nil {
 		goto ERR
 	}
 
 	//更新etcd
-	if err = GJobMgr.RecoverJob(deleteIds.Ids); err != nil {
+	if err = manager.GJobMgr.RecoverJob(deleteIds.Ids); err != nil {
 		goto ERR
 	}
 
@@ -340,16 +343,16 @@ func HandlerJobDelete(c *gin.Context) {
 	//ids = strings.Split(jobId, ",")
 
 	//从redis中删除
-	if err = GRedis.DelJobs(deleteIds.Ids); err != nil {
+	if err = manager.GRedis.DelJobs(deleteIds.Ids); err != nil {
 		goto ERR
 	}
 
 	//从数据库中删除
-	if err = GDB.DelJob(deleteIds.Ids); err != nil {
+	if err = manager.GDB.DelJob(deleteIds.Ids); err != nil {
 		goto ERR
 	}
 	//从etcd中删除
-	if ids, err = GJobMgr.DelJob(deleteIds.Ids); err != nil {
+	if ids, err = manager.GJobMgr.DelJob(deleteIds.Ids); err != nil {
 		goto ERR
 	}
 
@@ -379,7 +382,7 @@ func HandlerJobList(c *gin.Context) {
 	)
 
 	//从redis中获得job
-	if jobArr, err = GRedis.GetAllJobs(); err != nil {
+	if jobArr, err = manager.GRedis.GetAllJobs(); err != nil {
 		goto ERR
 	}
 
@@ -409,7 +412,7 @@ func HandlerJobListDetele(c *gin.Context) {
 	)
 
 	//从redis中获得job
-	if jobArr, err = GRedis.GetAllDeleteJobs(); err != nil {
+	if jobArr, err = manager.GRedis.GetAllDeleteJobs(); err != nil {
 		goto ERR
 	}
 
@@ -445,7 +448,7 @@ func handlerJobKill(resp http.ResponseWriter, req *http.Request) {
 
 	//获取强杀任务名
 	jobName = req.PostForm.Get("name")
-	if oldJobName, err = GJobMgr.KillJob(jobName); err != nil {
+	if oldJobName, err = manager.GJobMgr.KillJob(jobName); err != nil {
 		goto ERR
 	}
 	bytes = common.BuildResponse(0, "success", oldJobName)
@@ -467,7 +470,7 @@ func handleWorkList(resp http.ResponseWriter, req *http.Request) {
 		bytes   common.HttpReply
 	)
 
-	if workArr, err = GWorkMgr.ListWorker(); err != nil {
+	if workArr, err = manager.GWorkMgr.ListWorker(); err != nil {
 		goto ERR
 	}
 
@@ -504,7 +507,7 @@ func handUpload(resp http.ResponseWriter, req *http.Request) {
 	defer file.Close()
 
 	//创建文件
-	if newFile, err = os.Create(GConfig.BaseFilePath + "/" + fileHeader.Filename); err != nil {
+	if newFile, err = os.Create(master.GConfig.BaseFilePath + "/" + fileHeader.Filename); err != nil {
 		goto ERR
 	}
 
@@ -519,4 +522,43 @@ ERR:
 	//返回错误应答
 	bytes = common.BuildResponse(-1, err.Error(), nil)
 	fmt.Println(bytes)
+}
+
+//创建流水线
+func HandlerPipeCreate(c *gin.Context) {
+	var (
+		pipeline *model.Pipeline
+		bytes    common.HttpReply
+		err      error
+	)
+
+	//解析post表单
+	if err := c.ShouldBindBodyWith(&pipeline, binding.JSON); err != nil {
+		goto ERR
+	}
+
+	//加入数据库
+	if err = pipeline.SaveDB(); err != nil {
+		goto ERR
+	}
+
+	//加入redis
+	if err = pipeline.SaveRedis(); err != nil {
+		goto ERR
+	}
+
+	//返回正常应答
+	bytes = common.BuildResponse(0, "success", pipeline)
+	c.JSON(http.StatusOK, gin.H{
+		"data": bytes,
+	})
+	return
+
+ERR:
+
+	//返回错误应答
+	bytes = common.BuildResponse(-1, err.Error(), nil)
+	c.JSON(http.StatusOK, gin.H{
+		"data": bytes,
+	})
 }

@@ -1,4 +1,4 @@
-package master
+package manager
 
 import (
 	"crontab/common"

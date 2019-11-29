@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="" />
+    <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/Base.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/pipeline_job.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/Protocol.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/Protocol.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/ApiServer.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/ApiServer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/DBManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/DBManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/InitManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/InitManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/JobManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/JobManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/LogMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/LogMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/MasterManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MasterManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/MgMgrProduce.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MgMgrProduce.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/RedisManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/WorkMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/WorkMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/main/master.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/main/master.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/router/route.go" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,32 +38,40 @@
     </option>
   </component>
   <component name="GOROOT" path="C:\Go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1S5hYYCCeaZiqX5UpkBb5WKcO6M" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
     <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="configurable.Global.GOPATH.is.expanded" value="true" />
     <property name="configurable.Module.GOPATH.is.expanded" value="true" />
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.vendoring.notification.had.been.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../github.com/betterde/ects" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/master/manager" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="F:\code\GOPATH\src\crontab\master\router" />
-      <recent name="F:\code\GOPATH\src\crontab\common" />
-      <recent name="F:\code\GOPATH\src\crontab\worker" />
-      <recent name="F:\code\GOPATH\src\crontab\master\main\webroot" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="F:\code\GOPATH\src\crontab\master" />
       <recent name="F:\code\GOPATH\src\crontab\master\main" />
       <recent name="F:\code\GOPATH\src\crontab\master\middleware" />
       <recent name="F:\code\GOPATH\src\crontab\common" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\code\GOPATH\src\crontab\master\manager" />
+      <recent name="F:\code\GOPATH\src\crontab\master\router" />
+      <recent name="F:\code\GOPATH\src\crontab\common" />
+      <recent name="F:\code\GOPATH\src\crontab\worker" />
+      <recent name="F:\code\GOPATH\src\crontab\master\main\webroot" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -93,6 +119,17 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -105,11 +142,6 @@
           <url>file://$PROJECT_DIR$/worker/RedisManager.go</url>
           <line>92</line>
           <option name="timeStamp" value="104" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/master/ApiServer.go</url>
-          <line>135</line>
-          <option name="timeStamp" value="108" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
