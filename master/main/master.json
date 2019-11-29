@@ -1,0 +1,60 @@
+{
+
+  "http监听端口": "端口",
+  "apiPort": 8060,
+
+  "etcd连接ip": "用于连接etcd",
+  "etcdIP": ["127.0.0.1:2379"],
+
+  "etcd超时时间": "单位毫秒",
+  "etcdTimeout": 5000,
+
+  "tcp监听端口": "tcp监听端口",
+
+  "日志打印级别": "info",
+  "logLevel": "Info",
+
+  "日志文件名": "crontab.log",
+  "logFilename": "crontab.log",
+
+  "日志文件路径": "日志文件路径",
+  "logFilepath": "./",
+
+  "静态文件路径": "文件路径",
+  "webDir": "./webroot",
+
+  "文件存储路径": "文件存储路径",
+  "baseFilePath": "./file",
+
+  "数据库类型": "数据库类型",
+  "dialect": "mysql",
+
+  "数据库名称": "数据库名称",
+  "database": "cron",
+
+  "数据库账号": "用户名",
+  "user": "root",
+
+  "数据库密码": "密码",
+  "password": "WEAVERemobile7!@#",
+
+  "charset": "UTF-8",
+
+  "host": "localhost",
+
+  "port": 4806,
+
+  "maxIdleConns": 5,
+
+  "maxOpenConns": 10,
+
+  "redisHost"      : "127.0.0.1",
+
+  "redisPort"      : 6381,
+
+  "redisPassword"	: "WEAVERemobile7*()",
+
+  "redisMaxIdle"   : 3,
+
+  "redisMaxActive" : 5
+}
