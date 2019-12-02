@@ -2,23 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/Base.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/pipeline_job.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/entity/DeletePipelineJob.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/master/server/JobService.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/master/server/PipeLineService.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/master/server/PipelineJobService.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/job.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/Protocol.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/Protocol.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/ApiServer.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/ApiServer.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/DBManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/DBManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/InitManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/InitManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/JobManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/JobManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/LogMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/LogMgr.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/MasterManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MasterManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/MgMgrProduce.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MgMgrProduce.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/RedisManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/WorkMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/WorkMgr.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/main/master.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/main/master.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/Entity.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/DBManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/DBManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/RedisManager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/router/route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/server/ApiServer.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/ApiServer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/pipeline_job.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/pipeline_job.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -57,21 +53,22 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/master/manager" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+    <property name="settings.editor.selected.configurable" value="goland.project.structure" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="F:\code\GOPATH\src\crontab\master" />
-      <recent name="F:\code\GOPATH\src\crontab\master\main" />
-      <recent name="F:\code\GOPATH\src\crontab\master\middleware" />
-      <recent name="F:\code\GOPATH\src\crontab\common" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="F:\code\GOPATH\src\crontab\master\manager" />
       <recent name="F:\code\GOPATH\src\crontab\master\router" />
       <recent name="F:\code\GOPATH\src\crontab\common" />
       <recent name="F:\code\GOPATH\src\crontab\worker" />
       <recent name="F:\code\GOPATH\src\crontab\master\main\webroot" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\code\GOPATH\src\crontab\master\server" />
+      <recent name="F:\code\GOPATH\src\crontab\master" />
+      <recent name="F:\code\GOPATH\src\crontab\master\main" />
+      <recent name="F:\code\GOPATH\src\crontab\master\middleware" />
+      <recent name="F:\code\GOPATH\src\crontab\common" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -87,9 +84,10 @@
     </option>
   </component>
   <component name="RunManager" selected="Go Build.go build crontab/master/main">
-    <configuration name="go build crontab/master/main" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build crontab/master/main" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="crontab" />
       <working_directory value="$PROJECT_DIR$/master/main" />
+      <parameters value="gowatch" />
       <kind value="PACKAGE" />
       <filePath value="$PROJECT_DIR$/master/main/master.go" />
       <package value="crontab/master/main" />
@@ -111,7 +109,6 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build crontab/master/main" />
         <item itemvalue="Go Build.go build crontab/worker/main" />
       </list>
     </recent_temporary>
@@ -124,7 +121,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -133,11 +132,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://C:/GoPath/src/github.com/gin-gonic/gin/context.go</url>
-          <line>659</line>
-          <option name="timeStamp" value="61" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/worker/RedisManager.go</url>
           <line>92</line>
@@ -148,5 +142,10 @@
         <breakpoint type="DlvErrorBreakpoint" />
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="GoApplicationRunConfiguration">
+        <watch expression="c" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

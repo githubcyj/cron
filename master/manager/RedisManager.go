@@ -69,44 +69,6 @@ func (r *RedisManager) AddJob(job *common.Job) (err error) {
 	return
 }
 
-//删除job
-func (r *RedisManager) DelJobs(jobIds []string) (err error) {
-	var (
-		id string
-	)
-	for _, id = range jobIds {
-		if _, err = r.Conn.Do("HDEl", "jobs", id); err != nil {
-			GLogMgr.WriteLog("任务" + id + "删除失败")
-			continue
-		}
-	}
-	return nil
-}
-
-//从redis中获取单个job
-func (r *RedisManager) GetSingleJob(jobId string) (job *common.Job, err error) {
-	var (
-		data   interface{}
-		jobStr []byte
-		datas  []interface{}
-	)
-	if data, err = r.Conn.Do("hmget", "jobs", jobId); err != nil {
-		return nil, err
-	}
-	datas = data.([]interface{})
-	jobStr = datas[0].([]byte)
-	job = &common.Job{}
-	//反序列化
-	if err = json.Unmarshal(jobStr, job); err != nil {
-		return nil, err
-	}
-	if data == nil {
-		return nil, errors.New("redis没有对应job")
-	}
-
-	return job, nil
-}
-
 //从redis中获取所有job
 func (r *RedisManager) GetAllJobs() (jobArr []*common.Job, err error) {
 	var (

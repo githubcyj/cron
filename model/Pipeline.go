@@ -89,3 +89,25 @@ func (pipeline *Pipeline) SaveRedis() (err error) {
 
 	return
 }
+
+func (p *Pipeline) GetRedis() (pipeline *Pipeline, err error) {
+	var (
+		pStr  interface{}
+		bytes []byte
+	)
+
+	pipeline = &Pipeline{}
+
+	if pStr, err = manager.GRedis.Conn.Do("HMGET", "pipeline", p.PipelineId); err != nil {
+		manager.GLogMgr.WriteLog("从redis中获取流水线失败:" + err.Error())
+		return nil, err
+	}
+	bytes = pStr.([]byte)
+	//反序列化
+	if err = json.Unmarshal(bytes, pipeline); err != nil {
+		manager.GLogMgr.WriteLog("反序列化流水线失败：" + err.Error())
+		return nil, err
+	}
+
+	return pipeline, nil
+}

@@ -53,7 +53,7 @@ func (db *DBManager) UpdateJob(job *common.Job) (err error) {
 			oldJob, _ = db.GetSingleJob(job.JobId)
 			//数据库中没有对应的内容，则需要插入数据
 			if oldJob == nil {
-				if err = db.SaveJob(job); err != nil {
+				if err = db.saveJob(job); err != nil {
 					return
 				} else {
 					return nil
@@ -70,15 +70,6 @@ func (db *DBManager) UpdateJob(job *common.Job) (err error) {
 
 	err = db.DB.Save(job).Error
 	return err
-}
-
-//任务保存进入数据库
-func (db *DBManager) SaveJob(job *common.Job) (err error) {
-	if err = db.DB.Create(job).Error; err != nil {
-		GLogMgr.WriteLog("插入数据失败，失败原因：" + err.Error())
-		return
-	}
-	return
 }
 
 func (db *DBManager) DelJob(jobIds []string) (err error) {
@@ -103,16 +94,6 @@ func (db *DBManager) ListJob() (jobs []*common.Job, err error) {
 		return jobs, err
 	}
 	return jobs, err
-}
-
-//从数据库中查出单个任务
-func (db *DBManager) GetSingleJob(jobId string) (job *common.Job, err error) {
-	job = &common.Job{}
-	if err = db.DB.Where("jobId = ?", jobId).First(&job).Error; err != nil {
-		return job, err
-	}
-
-	return job, err
 }
 
 func (db *DBManager) DeleteJobForLogic(jobIds []string) (err error) {
