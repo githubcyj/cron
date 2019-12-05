@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/entity/DeletePipelineJob.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/master/server/JobService.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/master/server/PipeLineService.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/master/server/PipelineJobService.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/job.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/Entity.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/manager/DBManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/DBManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/manager/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/RedisManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/router/route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/server/ApiServer.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/ApiServer.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/Pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/pipeline_job.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/pipeline_job.go" afterDir="false" />
-    </list>
+    <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,19 +42,19 @@
     <property name="settings.editor.selected.configurable" value="goland.project.structure" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="F:\code\GOPATH\src\crontab\master\manager" />
-      <recent name="F:\code\GOPATH\src\crontab\master\router" />
-      <recent name="F:\code\GOPATH\src\crontab\common" />
-      <recent name="F:\code\GOPATH\src\crontab\worker" />
-      <recent name="F:\code\GOPATH\src\crontab\master\main\webroot" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="F:\code\GOPATH\src\crontab\master\server" />
       <recent name="F:\code\GOPATH\src\crontab\master" />
       <recent name="F:\code\GOPATH\src\crontab\master\main" />
       <recent name="F:\code\GOPATH\src\crontab\master\middleware" />
       <recent name="F:\code\GOPATH\src\crontab\common" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\code\GOPATH\src\crontab\master\manager" />
+      <recent name="F:\code\GOPATH\src\crontab\master\router" />
+      <recent name="F:\code\GOPATH\src\crontab\common" />
+      <recent name="F:\code\GOPATH\src\crontab\worker" />
+      <recent name="F:\code\GOPATH\src\crontab\master\main\webroot" />
     </key>
   </component>
   <component name="RunDashboard">
