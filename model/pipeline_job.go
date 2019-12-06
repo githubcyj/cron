@@ -200,3 +200,18 @@ func (pipelineJob *PipelineJob) KillEtcd() (err error) {
 	}
 	return
 }
+
+//任务是否与流水线绑定
+func (pipelineJob *PipelineJob) IsJobBindPipeline() (bind bool, err error) {
+	var (
+		count int
+	)
+	if err = manager.GDB.DB.Model(&PipelineJob{}).Where("job_id=?", pipelineJob.JobId).Count(&count).Error; err != nil {
+		return false, err
+	}
+	if count > 0 {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}

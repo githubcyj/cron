@@ -6,12 +6,15 @@
       <change beforePath="$PROJECT_DIR$/11.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/22.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/33.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entity/DeletePipelineJob.go" beforeDir="false" afterPath="$PROJECT_DIR$/entity/DeletePipelineJob.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/main/master.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/main/master.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/manager/DBManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/DBManager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/manager/InitManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/InitManager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/manager/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/RedisManager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/router/route.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/server/ApiServer.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/ApiServer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/server/PipelineJobService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/PipelineJobService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/pipeline_job.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/pipeline_job.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worker/Scheduler.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/Scheduler.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -41,6 +44,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="GO_FMT" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="configurable.Global.GOPATH.is.expanded" value="true" />
@@ -127,6 +131,10 @@
       </map>
     </option>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="增加创建任务接口" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加创建任务接口" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -134,6 +142,16 @@
           <url>file://$PROJECT_DIR$/worker/RedisManager.go</url>
           <line>92</line>
           <option name="timeStamp" value="104" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/master/server/JobService.go</url>
+          <line>26</line>
+          <option name="timeStamp" value="105" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/master/server/PipelineJobService.go</url>
+          <line>73</line>
+          <option name="timeStamp" value="106" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

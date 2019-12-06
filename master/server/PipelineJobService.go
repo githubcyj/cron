@@ -4,6 +4,7 @@ import (
 	"crontab/common"
 	"crontab/entity"
 	"crontab/model"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
@@ -55,9 +56,12 @@ func HandlerJobDelete(c *gin.Context) {
 	var (
 		err error
 		//jobId string
-		deleteIds *entity.DeleteIds
-		bytes     common.HttpReply
-		ids       []string
+		deleteIds   *entity.DeleteIds
+		bytes       common.HttpReply
+		ids         []string
+		id          string
+		pipelineJob *model.PipelineJob
+		bind        bool
 	)
 	deleteIds = &entity.DeleteIds{}
 	//获得表单参数
@@ -65,7 +69,23 @@ func HandlerJobDelete(c *gin.Context) {
 		goto ERR
 	}
 	//ids = strings.Split(jobId, ",")
+	ids = make([]string, 0)
+	//判断任务是否和流水线进行绑定，如果绑定则先解绑才能删除
+	for _, id = range deleteIds.JobIds {
+		pipelineJob = &model.PipelineJob{JobId: id}
+		if bind, err = pipelineJob.IsJobBindPipeline(); err != nil {
+			goto ERR
+		}
+		if bind == false {
+			ids = append(ids, id)
+		}
+	}
+	if len(ids) == 0 {
+		err = errors.New("任务都已绑定流水线，无法删除")
+		goto ERR
+	}
 
+	deleteIds.JobIds = ids
 	//从redis中删除
 	if err = deleteIds.DelJobsRedis(); err != nil {
 		goto ERR

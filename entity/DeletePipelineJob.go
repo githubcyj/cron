@@ -11,8 +11,7 @@ import (
   @todo
 */
 type DeleteIds struct {
-	PipelineId string
-	JobIds     []string
+	JobIds []string
 }
 
 //redis删除job
@@ -21,7 +20,7 @@ func (d *DeleteIds) DelJobsRedis() (err error) {
 		id string
 	)
 	for _, id = range d.JobIds {
-		if _, err = manager.GRedis.Conn.Do("ZREM", d.PipelineId, id); err != nil {
+		if _, err = manager.GRedis.Conn.Do("HDEL", "jobs", id); err != nil {
 			manager.GLogMgr.WriteLog("任务" + id + "删除失败")
 			continue
 		}
@@ -35,7 +34,7 @@ func (d *DeleteIds) DelJobsDB() (err error) {
 		jobId string
 	)
 	for _, jobId = range d.JobIds {
-		if err = manager.GDB.DB.Where("job_id = ? and pipeline_id", jobId, d.PipelineId).Delete(model.PipelineJob{}).Error; err != nil {
+		if err = manager.GDB.DB.Where("job_id = ?", jobId).Delete(model.Job{}).Error; err != nil {
 			return
 		}
 	}
