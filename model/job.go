@@ -148,7 +148,7 @@ func (j *Job) GetSingleJobRedis() (job *Job, err error) {
 func (j *Job) GetSingleJobDB() (job *Job, err error) {
 	job = &Job{}
 	if err = manager.GDB.DB.Where("jobId = ?", j.JobId).First(&job).Error; err != nil {
-		return job, err
+		return nil, err
 	}
 
 	return job, err

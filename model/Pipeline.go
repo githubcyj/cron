@@ -28,6 +28,9 @@ type Pipeline struct {
 	ExecutionCount int    `json:"executionCount"`                //执行次数
 	Finished       string `json:"finished"`                      //成功时执行的任务id
 	Failed         string `json:"failed"`                        //失败时执行的任务id
+	FinishedJob    *Job
+	FailedJob      *Job
+	Steps          []*PipelineJob
 	Base
 }
 

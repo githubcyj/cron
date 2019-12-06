@@ -22,15 +22,45 @@ import (
 //创建流水线
 func HandlerPipeCreate(c *gin.Context) {
 	var (
-		pipeline model.Pipeline
-		bytes    common.HttpReply
-		err      error
+		pipeline  model.Pipeline
+		bytes     common.HttpReply
+		err       error
+		job       *model.Job
+		jobFinish *model.Job
+		jobFail   *model.Job
 	)
 
 	//解析post表单
 	if err := c.ShouldBindBodyWith(&pipeline, binding.JSON); err != nil {
 		goto ERR
 	}
+
+	//根据finished failed获取job
+	//从redis中获取数据
+	if pipeline.Finished != "" {
+		job = &model.Job{JobId: pipeline.Finished}
+		if jobFinish, err = job.GetSingleJobRedis(); err != nil {
+			if jobFinish == nil {
+				if jobFinish, err = job.GetSingleJobDB(); err != nil {
+					goto ERR
+				}
+			}
+		}
+	}
+	if pipeline.Failed != "" {
+		job = &model.Job{JobId: pipeline.Failed}
+		if jobFail, err = job.GetSingleJobRedis(); err != nil {
+			if jobFail == nil {
+				//从数据库获取
+				if jobFail, err = job.GetSingleJobDB(); err != nil {
+					goto ERR
+				}
+			}
+		}
+	}
+
+	pipeline.FinishedJob = jobFinish
+	pipeline.FailedJob = jobFail
 
 	//加入数据库
 	if err = pipeline.SaveDB(); err != nil {
