@@ -1,7 +1,9 @@
 package worker
 
 import (
+	"context"
 	"crontab/common"
+	"crontab/model"
 	"strconv"
 	"time"
 )
@@ -39,7 +41,7 @@ func (scheduler *Scheduler) SchedulerLoop() {
 		jobResult  *common.JobExecuteResult
 		timerAfter time.Duration
 		timer      *time.Timer //这里设置定时器，是为了让之后的任务准时执行
-		log        *common.JobLog
+		//log        *common.JobLog
 	)
 
 	timerAfter = GScheduler.TrySchedule()
@@ -50,65 +52,66 @@ func (scheduler *Scheduler) SchedulerLoop() {
 		select {
 		case jobEvent = <-scheduler.JobEventChan: //事件任务队列
 			//对任务事件进行增删改查
-			GLogMgr.WriteLog("从任务事件中读取任务：" + jobEvent.Job.String())
+			GLogMgr.WriteLog("从任务事件中读取任务：" + jobEvent.Pipeline.Name)
 			scheduler.OperateJobEvent(jobEvent)
 		case <-timer.C:
 		case jobResult = <-scheduler.JobResultChan: //监听结果任务队列
-			if jobResult.JobExecuteInfo.Job.Type == common.CRON_JOB_TYPE {
+			if jobResult.PiplineRecord.Type == common.CRON_JOB_TYPE {
 				//任务执行完毕，需要从任务执行队列中删除任务
-				GLogMgr.WriteLog("任务执行完毕，从任务执行表中删除，任务：" + jobResult.JobExecuteInfo.Job.String())
-				delete(scheduler.JobExecutingTable, jobResult.JobExecuteInfo.Job.Name)
+				GLogMgr.WriteLog("任务执行完毕，从任务执行表中删除，任务：" + jobResult.PiplineRecord.PipelineName)
+				delete(scheduler.JobExecutingTable, jobResult.PiplineRecord.PipelineId)
 				//GLogMgr.WriteLog("任务执行表中任务个数：" + strconv.Itoa(len(scheduler.JobExecutingTable)))
 				for jobExecuteInfo, _ := range scheduler.JobExecutingTable {
 					GLogMgr.WriteLog("任务执行表中的任务：" + jobExecuteInfo)
 				}
 			}
-			if jobResult.JobExecuteInfo.Job.Type == common.DELAY_JOB_TYPE {
-				GLogMgr.WriteLog("任务执行完毕，从任务执行表中删除，任务：" + jobResult.JobExecuteInfo.Job.String())
-				delete(scheduler.JobTimerExecutingTable, jobResult.JobExecuteInfo.Job.Name)
-			}
+			//if jobResult.JobExecuteInfo.Job.Type == common.DELAY_JOB_TYPE {
+			//	GLogMgr.WriteLog("任务执行完毕，从任务执行表中删除，任务：" + jobResult.JobExecuteInfo.Job.String())
+			//	delete(scheduler.JobTimerExecutingTable, jobResult.JobExecuteInfo.Job.Name)
+			//}
 			//将结果保存到日志
-			go func() {
-				log = &common.JobLog{
-					JobName:      jobResult.JobExecuteInfo.Job.Name,
-					Command:      jobResult.JobExecuteInfo.Job.Command,
-					Output:       string(jobResult.Output),
-					PlanTime:     jobResult.JobExecuteInfo.PlanTime.Unix(),
-					SchedultTime: jobResult.JobExecuteInfo.ExcutingTime.Unix(),
-					StartTime:    jobResult.StartTime.Unix(),
-					EndTime:      jobResult.EndTime.Unix(),
-				}
-
-				if jobResult.Err == nil {
-					log.Err = ""
-				} else {
-					log.Err = jobResult.Err.Error()
-				}
-
-				GLogMgr.Append(log)
-			}()
+			//go func() {
+			//	log = &common.JobLog{
+			//		JobName:      jobResult.JobExecuteInfo.Job.Name,
+			//		Command:      jobResult.JobExecuteInfo.Job.Command,
+			//		Output:       string(jobResult.Output),
+			//		PlanTime:     jobResult.JobExecuteInfo.PlanTime.Unix(),
+			//		SchedultTime: jobResult.JobExecuteInfo.ExcutingTime.Unix(),
+			//		StartTime:    jobResult.StartTime.Unix(),
+			//		EndTime:      jobResult.EndTime.Unix(),
+			//	}
+			//
+			//	if jobResult.Err == nil {
+			//		log.Err = ""
+			//	} else {
+			//		log.Err = jobResult.Err.Error()
+			//	}
+			//
+			//	GLogMgr.Append(log)
+			//}()
 		}
 		timerAfter = GScheduler.TrySchedule()
 		timer.Reset(timerAfter)
-		GScheduler.ScheduleTime()
+		//GScheduler.ScheduleTime()
 	}
 }
 
-//调度延时消息，延时消息只需要调度一次
-func (scheduler *Scheduler) ScheduleTime() {
-
-	var (
-		jobScheduleTimer *common.JobScheduleTimer
-	)
-
-	if len(scheduler.JobTimerTable) == 0 {
-		return
-	}
-	for _, jobScheduleTimer = range scheduler.JobTimerTable {
-		GLogMgr.WriteLog("开始调度延时任务")
-		GScheduler.TryStartTimerJob(jobScheduleTimer)
-	}
-}
+//
+////调度延时消息，延时消息只需要调度一次
+//func (scheduler *Scheduler) ScheduleTime() {
+//
+//	var (
+//		jobScheduleTimer *common.JobScheduleTimer
+//	)
+//
+//	if len(scheduler.JobTimerTable) == 0 {
+//		return
+//	}
+//	for _, jobScheduleTimer = range scheduler.JobTimerTable {
+//		GLogMgr.WriteLog("开始调度延时任务")
+//		GScheduler.TryStartTimerJob(jobScheduleTimer)
+//	}
+//}
 
 //进行任务调度，调度定时消息
 func (scheduler *Scheduler) TrySchedule() (timeAfter time.Duration) {
@@ -131,11 +134,11 @@ func (scheduler *Scheduler) TrySchedule() (timeAfter time.Duration) {
 	//1. 从计划任务表中选择离当前时间最近的且不在执行中的任务执行
 	//遍历查找job
 	for _, jobSchedulePlan = range GScheduler.JobPlanTable {
-		GLogMgr.WriteLog(jobSchedulePlan.Job.Name + "的下次执行时间" + jobSchedulePlan.NextTime.String())
+		GLogMgr.WriteLog(jobSchedulePlan.Pipeline.Name + "的下次执行时间" + jobSchedulePlan.NextTime.String())
 		GLogMgr.WriteLog("当前时间：" + now.String())
 		if jobSchedulePlan.NextTime.Before(now) || jobSchedulePlan.NextTime.Equal(now) {
 			//尝试执行任务
-			GLogMgr.WriteLog("开始执行任务：" + jobSchedulePlan.Job.String())
+			GLogMgr.WriteLog("开始执行任务：" + jobSchedulePlan.Pipeline.Name)
 			scheduler.TryStartJob(jobSchedulePlan)
 			//GLogMgr.WriteLog("结束执行任务：" + jobSchedulePlan.Job.String())
 			//更新任务的下次执行时间
@@ -156,60 +159,113 @@ func (scheduler *Scheduler) TrySchedule() (timeAfter time.Duration) {
 	return
 }
 
-//尝试执行延时任务
-func (scheduler *Scheduler) TryStartTimerJob(jobScheduleTimer *common.JobScheduleTimer) {
-	var (
-		jobExecuting   bool
-		jobExecuteInfo *common.JobExecuteInfo
-	)
-
-	if jobExecuteInfo, jobExecuting = scheduler.JobExecutingTable[jobScheduleTimer.Job.Name]; jobExecuting {
-		return
-	}
-
-	//构建任务执行信息
-	jobExecuteInfo = common.BuildJobTimerExecuteInfo(jobScheduleTimer)
-
-	//添加到任务执行表
-	scheduler.JobTimerExecutingTable[jobExecuteInfo.Job.Name] = jobExecuteInfo
-
-	//4. 执行任务
-	go GExecutor.ExecutingJob(jobExecuteInfo)
-}
+//
+////尝试执行延时任务
+//func (scheduler *Scheduler) TryStartTimerJob(jobScheduleTimer *common.JobScheduleTimer) {
+//	var (
+//		jobExecuting   bool
+//		jobExecuteInfo *common.JobExecuteInfo
+//	)
+//
+//	if jobExecuteInfo, jobExecuting = scheduler.JobExecutingTable[jobScheduleTimer.Job.Name]; jobExecuting {
+//		return
+//	}
+//
+//	//构建任务执行信息
+//	jobExecuteInfo = common.BuildJobTimerExecuteInfo(jobScheduleTimer)
+//
+//	//添加到任务执行表
+//	scheduler.JobTimerExecutingTable[jobExecuteInfo.Pipeline.PipelineId] = jobExecuteInfo
+//
+//	//4. 执行任务
+//	go GExecutor.ExecutingJob(jobExecuteInfo)
+//}
 
 //尝试执行任务
 func (scheduler *Scheduler) TryStartJob(jobSchedulePlan *common.JobSchedulePlan) {
 	var (
-		jobExecuting   bool
-		jobExecuteInfo *common.JobExecuteInfo
-		runtime        time.Duration
-		realRuntime    time.Duration
+		jobExecuteInfo   *common.JobExecuteInfo
+		pipelineJob      *model.PipelineJob
+		jobRecord        *model.JobRecord
+		jobExecuteResult *common.JobExecuteResult
+		pipelineRecord   *model.PipelineRecord
+		jobRecords       []*model.JobRecord
+		cancelCtx        context.Context
+		cancelFunc       context.CancelFunc
+		startTime        time.Time
+		endTime          time.Time
 	)
 
 	//1. 判断任务是否在执行中，如果任务在执行，则判断任务是否超过运行时间
-	if jobExecuteInfo, jobExecuting = scheduler.JobExecutingTable[jobSchedulePlan.Job.Name]; jobExecuting {
-		//GLogMgr.WriteLog("判断任务是否超时：" + jobExecuteInfo.Job.Name)
-		runtime = time.Now().Sub(jobExecuteInfo.ExcutingTime)
-		realRuntime = time.Duration(GConfig.JobRuntime) * time.Millisecond
-		GLogMgr.WriteLog(jobExecuteInfo.Job.Name + "执行时间：" + runtime.String())
-		GLogMgr.WriteLog("realRuntime:" + realRuntime.String())
-		if realRuntime < runtime { //任务运行时间太长，杀死任务并重新调度
-			GLogMgr.WriteLog("任务超时，杀死任务：" + jobExecuteInfo.Job.Name)
-			jobExecuteInfo.CancelFunc()
-			delete(GScheduler.JobExecutingTable, jobExecuteInfo.Job.Name)
-		}
-		return
-	}
-
+	//if jobExecuteInfo, jobExecuting = scheduler.JobExecutingTable[jobSchedulePlan.Job.Name]; jobExecuting {
+	//	//GLogMgr.WriteLog("判断任务是否超时：" + jobExecuteInfo.Job.Name)
+	//	runtime = time.Now().Sub(jobExecuteInfo.ExcutingTime)
+	//	realRuntime = time.Duration(GConfig.JobRuntime) * time.Millisecond
+	//	GLogMgr.WriteLog(jobExecuteInfo.Job.Name + "执行时间：" + runtime.String())
+	//	GLogMgr.WriteLog("realRuntime:" + realRuntime.String())
+	//	if realRuntime < runtime { //任务运行时间太长，杀死任务并重新调度
+	//		GLogMgr.WriteLog("任务超时，杀死任务：" + jobExecuteInfo.Job.Name)
+	//		jobExecuteInfo.CancelFunc()
+	//		delete(GScheduler.JobExecutingTable, jobExecuteInfo.Job.Name)
+	//	}
+	//	return
+	//}
+	jobExecuteResult = &common.JobExecuteResult{}
+	jobRecords = make([]*model.JobRecord, 0)
 	//2. 创建任务执行信息
 	jobExecuteInfo = common.BuildJobExecuteInfo(jobSchedulePlan)
 
 	//3. 添加到任务执行表中
-	scheduler.JobExecutingTable[jobExecuteInfo.Job.Name] = jobExecuteInfo
-	GLogMgr.WriteLog(jobExecuteInfo.Job.Name + "加入任务执行表")
-
-	//4. 执行任务
-	go GExecutor.ExecutingJob(jobExecuteInfo)
+	scheduler.JobExecutingTable[jobExecuteInfo.Pipeline.PipelineId] = jobExecuteInfo
+	GLogMgr.WriteLog(jobExecuteInfo.Pipeline.Name + "加入任务执行表")
+	startTime = time.Now() //流水线开始执行时间
+	pipelineRecord = &model.PipelineRecord{}
+	//执行流水线中绑定的任务
+	for _, pipelineJob = range jobExecuteInfo.Pipeline.Steps {
+		if pipelineJob.Timeout == 0 {
+			cancelCtx, cancelFunc = context.WithCancel(context.TODO())
+		} else {
+			cancelCtx, cancelFunc = context.WithTimeout(context.TODO(), time.Duration(pipelineJob.Timeout)*time.Second)
+		}
+		jobExecuteInfo.CancelCtx = cancelCtx
+		jobExecuteInfo.CancelFunc = cancelFunc
+		//4. 执行任务
+		jobRecord = GExecutor.ExecutingJob(jobExecuteInfo, pipelineJob)
+		jobRecords = append(jobRecords, jobRecord)
+		if jobRecord.Status == 0 { //任务执行失败，则流水线执行失败
+			pipelineRecord.Status = 0
+			goto END
+		}
+	}
+END:
+	cancelCtx, cancelFunc = context.WithCancel(context.TODO())
+	jobExecuteInfo.CancelCtx = cancelCtx
+	jobExecuteInfo.CancelFunc = cancelFunc
+	if pipelineRecord.Status == 0 { //流水线执行失败
+		if jobExecuteInfo.Pipeline.Failed != "" {
+			//执行失败时任务
+			GExecutor.ExecJob(jobExecuteInfo, jobExecuteInfo.Pipeline.FailedJob)
+			GLogMgr.WriteLog("流水线执行失败，执行失败时任务")
+		}
+	} else { //流水线执行成功
+		if jobExecuteInfo.Pipeline.Finished != "" {
+			//执行成功时任务
+			GExecutor.ExecJob(jobExecuteInfo, jobExecuteInfo.Pipeline.FinishedJob)
+		}
+	}
+	//流水线执行完毕时间
+	endTime = time.Now()
+	pipelineRecord.BeginWith = startTime
+	pipelineRecord.FinishWith = endTime
+	pipelineRecord.Duration = int(startTime.Sub(endTime).Seconds())
+	pipelineRecord.PipelineId = jobExecuteInfo.Pipeline.PipelineId
+	pipelineRecord.Spec = jobExecuteInfo.Pipeline.CronExpr
+	pipelineRecord.Type = jobExecuteInfo.Pipeline.Type
+	pipelineRecord.PipelineName = jobExecuteInfo.Pipeline.Name
+	jobExecuteResult.JobRecord = jobRecords
+	jobExecuteResult.PiplineRecord = pipelineRecord
+	//通知调度器流水线执行完毕
+	scheduler.PushSchedulerResult(jobExecuteResult)
 }
 
 //通知调度器
@@ -233,13 +289,13 @@ func (scheduler *Scheduler) OperateJobEvent(jobEvent *common.JobEvent) (err erro
 	//如果是添加任务事件，则向planTable中增加一个事件
 	switch jobEvent.Event {
 	case common.SAVE_JOB_EVENT:
-		if jobEvent.JobType == 0 { //如果是定时任务
-			if jobSchedulePlan, err = common.BuildJobSchedulePlan(jobEvent.Job); err != nil {
-				GLogMgr.WriteLog("任务加入计划表出错：" + jobEvent.Job.String())
+		if jobEvent.Type == 0 { //如果是定时任务
+			if jobSchedulePlan, err = common.BuildJobSchedulePlan(jobEvent.Pipeline); err != nil {
+				GLogMgr.WriteLog("流水线加入计划表出错：" + jobEvent.Pipeline.Name)
 				return
 			}
-			GLogMgr.WriteLog("任务加入计划表：" + jobEvent.Job.Name)
-			scheduler.JobPlanTable[jobEvent.Job.Name] = jobSchedulePlan
+			GLogMgr.WriteLog("流水线加入计划表：" + jobEvent.Pipeline.Name)
+			scheduler.JobPlanTable[jobEvent.Pipeline.PipelineId] = jobSchedulePlan
 		}
 		//if jobEvent.JobType == 1 { //如果是延时任务，延时任务只需要执行一次，所以直接加入任务执行表中
 		//	jobExecuteInfo = &common.JobExecuteInfo{
@@ -252,17 +308,17 @@ func (scheduler *Scheduler) OperateJobEvent(jobEvent *common.JobEvent) (err erro
 		//	scheduler.JobTimerTable[jobEvent.Job.JobId] = jobExecuteInfo
 		//}
 	case common.DELETE_JOB_EVENT:
-		GLogMgr.WriteLog("将任务从计划表中删除：" + jobEvent.Job.String())
-		delete(GScheduler.JobPlanTable, jobEvent.Job.Name)
+		GLogMgr.WriteLog("将流水线从计划表中删除：" + jobEvent.Pipeline.Name)
+		delete(GScheduler.JobPlanTable, jobEvent.Pipeline.PipelineId)
 	case common.KILL_JOB_EVENT: //强杀任务
-		//将任务从计划表中删除
-		delete(GScheduler.JobPlanTable, jobEvent.Job.Name)
-		GLogMgr.WriteLog("任务" + jobEvent.Job.Name + "被强杀")
+		//将流水线从计划表中删除
+		delete(GScheduler.JobPlanTable, jobEvent.Pipeline.PipelineId)
+		GLogMgr.WriteLog("流水线" + jobEvent.Pipeline.PipelineId + "被强杀")
 		GLogMgr.WriteLog("当前任务计划表中任务数：" + strconv.Itoa(len(GScheduler.JobPlanTable)))
 		//取消command执行，判断任务是否在执行
-		if jobExecuteInfo, jobExecuting = GScheduler.JobExecutingTable[jobEvent.Job.Name]; jobExecuting {
+		if jobExecuteInfo, jobExecuting = GScheduler.JobExecutingTable[jobEvent.Pipeline.PipelineId]; jobExecuting {
 			jobExecuteInfo.CancelFunc() //取消任务执行
-			GLogMgr.WriteLog("任务" + jobExecuteInfo.Job.Name + "被杀死")
+			GLogMgr.WriteLog("流水线" + jobExecuteInfo.Pipeline.PipelineId + "被杀死")
 		}
 	}
 

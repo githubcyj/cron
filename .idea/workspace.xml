@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="增加创建任务接口">
+      <change afterPath="$PROJECT_DIR$/model/JobRecord.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/pipelineRecord.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/router/route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/server/PipeLineService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/PipeLineService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/server/PipelineJobService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/PipelineJobService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/Pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/pipeline_job.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/pipeline_job.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/Protocol.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/Protocol.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/ExecuteMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/ExecuteMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/Scheduler.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/Scheduler.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
