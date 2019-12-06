@@ -5,6 +5,7 @@ import (
 	"crontab/master/manager"
 	"crontab/model"
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -91,9 +92,15 @@ ERR:
 //任务与流水线关联
 func HandlerPiplineJob(c *gin.Context) {
 	var (
-		bytes       common.HttpReply
-		pipelineJob model.PipelineJob
-		err         error
+		bytes          common.HttpReply
+		pipelineJob    model.PipelineJob
+		pipelineJobArr []*model.PipelineJob
+		err            error
+		len            int
+		job            *model.Job
+		jobR           *model.Job
+		pipeline       *model.Pipeline
+		pipelineR      *model.Pipeline
 	)
 
 	//解析post表单
@@ -101,13 +108,56 @@ func HandlerPiplineJob(c *gin.Context) {
 		goto ERR
 	}
 
+	if len, err = pipelineJob.GetPipelineJobLen(); err != nil {
+		goto ERR
+	}
+
+	pipelineJob.Step = len + 1
+
+	//根据jobid获取job
+	job = &model.Job{JobId: pipelineJob.JobId}
+	if jobR, err = job.GetSingleJobRedis(); err != nil {
+		goto ERR
+	}
+	if jobR == nil {
+		if jobR, err = job.GetSingleJobDB(); err != nil {
+			goto ERR
+		}
+		if jobR == nil {
+			err = errors.New("任务不存在")
+			goto ERR
+		}
+	}
 	//保存数据库
 	if err = pipelineJob.SaveDB(); err != nil {
 		goto ERR
 	}
 
+	pipelineJob.Job = jobR
 	//保存redis
 	if err = pipelineJob.SaveRedis(); err != nil {
+		goto ERR
+	}
+
+	//更新redis中pipeline中的信息
+	//1. 从redis中获取
+	pipeline = &model.Pipeline{PipelineId: pipelineJob.PipelineId}
+	if pipelineR, err = pipeline.GetRedis(); err != nil {
+		goto ERR
+	}
+	//2. 修改Steps内容
+	if pipelineJobArr, err = pipelineJob.GetAllJobRedis(); err != nil {
+		goto ERR
+	}
+	pipelineR.Steps = pipelineJobArr
+
+	//3. 删除原本redis中的数据
+	if err = pipelineR.DelRedis(); err != nil {
+		goto ERR
+	}
+
+	//重新存入redis
+	if err = pipelineR.SaveRedis(); err != nil {
 		goto ERR
 	}
 

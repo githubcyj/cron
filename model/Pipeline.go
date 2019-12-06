@@ -95,8 +95,9 @@ func (pipeline *Pipeline) SaveRedis() (err error) {
 
 func (p *Pipeline) GetRedis() (pipeline *Pipeline, err error) {
 	var (
-		pStr  interface{}
-		bytes []byte
+		pStr   interface{}
+		bytes  []byte
+		pInter []interface{}
 	)
 
 	pipeline = &Pipeline{}
@@ -105,7 +106,8 @@ func (p *Pipeline) GetRedis() (pipeline *Pipeline, err error) {
 		manager.GLogMgr.WriteLog("从redis中获取流水线失败:" + err.Error())
 		return nil, err
 	}
-	bytes = pStr.([]byte)
+	pInter = pStr.([]interface{})
+	bytes = pInter[0].([]byte)
 	//反序列化
 	if err = json.Unmarshal(bytes, pipeline); err != nil {
 		manager.GLogMgr.WriteLog("反序列化流水线失败：" + err.Error())
@@ -113,4 +115,9 @@ func (p *Pipeline) GetRedis() (pipeline *Pipeline, err error) {
 	}
 
 	return pipeline, nil
+}
+
+func (p *Pipeline) DelRedis() (err error) {
+	_, err = manager.GRedis.Conn.Do("HDEL", "pipeline", p.PipelineId)
+	return
 }

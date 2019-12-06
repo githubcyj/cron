@@ -19,19 +19,36 @@ import (
 //获取一个流水线下所有未删除的job
 func HandlerJobList(c *gin.Context) {
 	var (
-		jobArr      []*model.Job
-		err         error
-		bytes       common.HttpReply
-		pipelineId  string
-		pipelineJob *model.PipelineJob
+		jobArr         []*model.Job
+		pipelineJobArr []*model.PipelineJob
+		pipelineJobR   *model.PipelineJob
+		err            error
+		bytes          common.HttpReply
+		pipelineId     string
+		pipelineJob    *model.PipelineJob
+		job            *model.Job
+		jobR           *model.Job
 	)
 
 	pipelineId = c.Query("pipelineId")
 	pipelineJob = &model.PipelineJob{PipelineId: pipelineId}
 
 	//从redis中获得job
-	if jobArr, err = pipelineJob.GetAllJobRedis(); err != nil {
+	if pipelineJobArr, err = pipelineJob.GetAllJobRedis(); err != nil {
 		goto ERR
+	}
+
+	for _, pipelineJobR = range pipelineJobArr {
+		job = &model.Job{JobId: pipelineJobR.JobId}
+		if jobR, err = job.GetSingleJobRedis(); err != nil {
+			goto ERR
+		}
+		if jobR == nil {
+			if jobR, err = job.GetSingleJobDB(); err != nil {
+				goto ERR
+			}
+		}
+		jobArr = append(jobArr, jobR)
 	}
 
 	//返回正常应答

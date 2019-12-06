@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
 	"go.etcd.io/etcd/clientv3"
 	"time"
 )
@@ -31,16 +30,8 @@ type PipelineJob struct {
 
 func (pipelineJob *PipelineJob) BeforeCreate(scope *gorm.Scope) error {
 	var (
-		id  uuid.UUID
 		err error
-		uid string
 	)
-	id, _ = uuid.NewV4()
-	uid = string([]rune(id.String())[:10])
-	if err = scope.SetColumn("pipelineId", uid); err != nil {
-		return err
-	}
-
 	if err = scope.SetColumn("CreateTime", time.Now()); err != nil {
 		return err
 	}
@@ -64,6 +55,7 @@ func (pipelineJob *PipelineJob) SaveRedis() (err error) {
 	var (
 		data interface{}
 		len  int
+		pStr []byte
 	)
 
 	//先获取任务个数
@@ -71,9 +63,14 @@ func (pipelineJob *PipelineJob) SaveRedis() (err error) {
 		manager.GLogMgr.WriteLog("获取流水线下任务个数失败：" + err.Error())
 	}
 
-	len = data.(int) + 1
+	len = int(data.(int64)) + 1
 
-	if _, err = manager.GRedis.Conn.Do("ZADD", pipelineJob.PipelineId, len, pipelineJob.JobId); err != nil {
+	//序列化
+	if pStr, err = json.Marshal(pipelineJob); err != nil {
+		return
+	}
+
+	if _, err = manager.GRedis.Conn.Do("ZADD", pipelineJob.PipelineId, len, pStr); err != nil {
 		manager.GLogMgr.WriteLog("流水线任务关系保存redis失败：" + err.Error())
 		return
 	}
@@ -89,7 +86,7 @@ func (pipelineJob *PipelineJob) DelRedis() (err error) {
 	return
 }
 
-func (pipelineJob *PipelineJob) GetRedisLen() (len int, err error) {
+func (pipelineJob *PipelineJob) GetPipelineJobLen() (len int, err error) {
 	var (
 		length int
 		data   interface{}
@@ -100,22 +97,28 @@ func (pipelineJob *PipelineJob) GetRedisLen() (len int, err error) {
 		return length, err
 	}
 
-	length = data.(int)
+	length = int(data.(int64))
+	if length == 0 {
+		//从数据库获取
+		if err = manager.GDB.DB.Model(&PipelineJob{}).Where("pipeline_id=?", pipelineJob.PipelineId).Count(&length).Error; err != nil {
+			return length, err
+		}
+	}
 
 	return length, nil
 }
 
-func (pipelineJob *PipelineJob) GetAllJobRedis() (jobArr []*Job, err error) {
+func (pipelineJob *PipelineJob) GetAllJobRedis() (jobArr []*PipelineJob, err error) {
 	var (
 		datas  []interface{}
-		job    *Job
+		job    *PipelineJob
 		data   interface{}
 		ok     bool
 		d      interface{}
 		jobStr []byte
 	)
 
-	jobArr = make([]*Job, 0)
+	jobArr = make([]*PipelineJob, 0)
 	if data, err = manager.GRedis.Conn.Do("ZRANGE", pipelineJob.PipelineId, 0, -1); err != nil {
 		manager.GLogMgr.WriteLog("从数据库中获取数据失败，失败原因：" + err.Error())
 		return jobArr, err
@@ -126,14 +129,12 @@ func (pipelineJob *PipelineJob) GetAllJobRedis() (jobArr []*Job, err error) {
 
 	for _, d = range datas {
 		jobStr = d.([]byte)
-		job = &Job{}
+		job = &PipelineJob{}
 		//反序列化
 		if err = json.Unmarshal(jobStr, job); err != nil {
 			return jobArr, err
 		}
-		if job.IsDel != 1 {
-			jobArr = append(jobArr, job)
-		}
+		jobArr = append(jobArr, job)
 	}
 
 	return jobArr, nil
