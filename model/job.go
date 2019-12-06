@@ -48,7 +48,7 @@ func (job *Job) BeforeCreate(scope *gorm.Scope) error {
 	)
 	id, _ = uuid.NewV4()
 	uid = string([]rune(id.String())[:10])
-	if err = scope.SetColumn("pipelineId", uid); err != nil {
+	if err = scope.SetColumn("job_id", uid); err != nil {
 		return err
 	}
 
