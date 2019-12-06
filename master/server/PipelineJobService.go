@@ -133,20 +133,20 @@ ERR:
 //强杀流水线
 func HandlerPipelineKill(c *gin.Context) {
 	var (
-		pipelineId  string
-		pipelineJob *model.PipelineJob
-		err         error
-		bytes       common.HttpReply
+		pipelineId string
+		pipeline   *model.Pipeline
+		err        error
+		bytes      common.HttpReply
 	)
 
 	pipelineId = c.Query("pipelineId")
-	pipelineJob = &model.PipelineJob{PipelineId: pipelineId}
-	if err = pipelineJob.KillEtcd(); err != nil {
+	pipeline = &model.Pipeline{PipelineId: pipelineId}
+	if err = pipeline.KillEtcd(); err != nil {
 		goto ERR
 	}
 
 	//返回正常应答
-	bytes = common.BuildResponse(0, "success", pipelineJob)
+	bytes = common.BuildResponse(0, "success", pipeline)
 	c.JSON(http.StatusOK, gin.H{
 		"data": bytes,
 	})

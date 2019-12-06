@@ -24,7 +24,7 @@ func Route(router *gin.Engine) {
 		api.POST("/pipeline/job", server.HandlerPiplineJob)     //任务与流水线关联
 		api.GET("/pipeline/steps", server.HandlerStep)          //任务排序
 
-		//api.GET("/pipeline/run", server.HandlerSyncEtcd)      //将流水线同步到etcd中开始调度
+		api.GET("/pipeline/run", server.HandlerSyncEtcd)      //将流水线同步到etcd中开始调度
 		api.GET("/pipeline/kill", server.HandlerPipelineKill) //将流水线同步到etcd中开始调度
 	}
 }

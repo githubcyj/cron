@@ -311,3 +311,38 @@ ERR:
 		"data": bytes,
 	})
 }
+
+//将流水线同步到etcd中开始调度
+func HandlerSyncEtcd(c *gin.Context) {
+	var (
+		pipelineId string
+		pipeline   *model.Pipeline
+		pipelineR  *model.Pipeline
+		bytes      common.HttpReply
+		err        error
+	)
+
+	pipelineId = c.Query("pipelineId")
+	pipeline = &model.Pipeline{PipelineId: pipelineId}
+	//从redis中获取对应的流水线
+	if pipelineR, err = pipeline.GetRedis(); err != nil {
+		goto ERR
+	}
+	if err = pipelineR.SaveEtcd(); err != nil {
+		goto ERR
+	}
+
+	//返回正常应答
+	bytes = common.BuildResponse(0, "success", pipelineR)
+	c.JSON(http.StatusOK, gin.H{
+		"data": bytes,
+	})
+	return
+
+ERR:
+	//返回错误应答
+	bytes = common.BuildResponse(-1, err.Error(), nil)
+	c.JSON(http.StatusOK, gin.H{
+		"data": bytes,
+	})
+}

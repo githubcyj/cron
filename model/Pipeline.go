@@ -1,10 +1,13 @@
 package model
 
 import (
+	"context"
+	"crontab/common"
 	manager "crontab/master/manager"
 	"encoding/json"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
+	"go.etcd.io/etcd/clientv3"
 	"time"
 )
 
@@ -119,5 +122,67 @@ func (p *Pipeline) GetRedis() (pipeline *Pipeline, err error) {
 
 func (p *Pipeline) DelRedis() (err error) {
 	_, err = manager.GRedis.Conn.Do("HDEL", "pipeline", p.PipelineId)
+	return
+}
+
+func (p *Pipeline) SaveEtcd() (err error) {
+	var (
+		saveKey     string
+		putResponse *clientv3.PutResponse
+		old         *PipelineJob
+		pipeStr     []byte
+	)
+
+	//保存的路径
+	saveKey = common.SAVE_JOB_DIR + p.PipelineId
+
+	//序列化
+	if pipeStr, err = json.Marshal(p); err != nil {
+		manager.GLogMgr.WriteLog("流水线序列化失败：" + err.Error())
+		return
+	}
+
+	//需要传回上一次保存的数据，用以反馈
+	if putResponse, err = manager.GJobMgr.Kv.Put(context.TODO(), saveKey, string(pipeStr), clientv3.WithPrevKV()); err != nil {
+		return
+	}
+	manager.GLogMgr.WriteLog("添加任务成功,任务：" + p.Name)
+
+	//如果是更新，则需要返回旧值
+	if putResponse.PrevKv != nil {
+		//反序列化
+		_ = json.Unmarshal(putResponse.PrevKv.Value, old)
+		manager.GLogMgr.WriteLog("更新操作")
+	}
+	return
+}
+
+//强杀任务
+func (p *Pipeline) KillEtcd() (err error) {
+
+	var (
+		killKey        string
+		putResp        *clientv3.PutResponse
+		leaseGrantResp *clientv3.LeaseGrantResponse
+		leaseId        clientv3.LeaseID
+	)
+
+	killKey = common.KILL_JOB_DIR + p.PipelineId
+
+	//让workder监听到一次put操作，创建一个租约让其稍后自动过期
+	if leaseGrantResp, err = manager.GJobMgr.Lease.Grant(context.TODO(), 1); err != nil {
+		return
+	}
+
+	leaseId = leaseGrantResp.ID
+
+	if putResp, err = manager.GJobMgr.Kv.Put(context.TODO(), killKey, "", clientv3.WithLease(leaseId)); err != nil {
+		return
+	}
+
+	if putResp.PrevKv != nil {
+		//反序列化json
+		return
+	}
 	return
 }
