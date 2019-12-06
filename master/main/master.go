@@ -69,7 +69,7 @@ func main() {
 	}
 
 	//将任务放入redis中
-	go manager.InitJobsToRedis()
+	//go manager.InitJobsToRedis()
 
 	defer manager.GMasterMgr.UnVoting()
 

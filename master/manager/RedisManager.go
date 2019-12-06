@@ -155,57 +155,58 @@ func (r *RedisManager) AddAllJob(jobs []*common.Job) {
 	}
 }
 
-//更新单个job
-func (r *RedisManager) UpdateSingleJob(job *common.Job) (err error) {
-	var (
-		oldJob *common.Job
-		jobStr []byte
-	)
-
-	if oldJob, err = r.GetSingleJob(job.JobId); err != nil {
-		return
-	}
-
-	//先删除
-	if _, err = r.Conn.Do("hdel", "jobs", job.JobId); err != nil {
-		return err
-	}
-
-	oldJob.UpdateCount++
-
-	//序列化
-	if jobStr, err = json.Marshal(oldJob); err != nil {
-		return
-	}
-	//更新
-	if _, err = r.Conn.Do("hmset", "jobs", oldJob.JobId, jobStr); err != nil {
-		return
-	}
-
-	return nil
-}
-
-//先删除，然后再更新，直接更新开销太大
-func (r *RedisManager) UpdateJob(jobs []*common.Job) (err error) {
-	var (
-		ids []string
-		job *common.Job
-	)
-	ids = make([]string, 0)
-	for _, job = range jobs {
-		ids = append(ids, job.JobId)
-	}
-
-	if err = r.DelJobs(ids); err != nil {
-		return
-	}
-
-	//插入
-	for _, job = range jobs {
-		if err = r.AddJob(job); err != nil {
-			return
-		}
-	}
-
-	return
-}
+//
+////更新单个job
+//func (r *RedisManager) UpdateSingleJob(job *common.Job) (err error) {
+//	var (
+//		oldJob *common.Job
+//		jobStr []byte
+//	)
+//
+//	if oldJob, err = r.GetSingleJob(job.JobId); err != nil {
+//		return
+//	}
+//
+//	//先删除
+//	if _, err = r.Conn.Do("hdel", "jobs", job.JobId); err != nil {
+//		return err
+//	}
+//
+//	oldJob.UpdateCount++
+//
+//	//序列化
+//	if jobStr, err = json.Marshal(oldJob); err != nil {
+//		return
+//	}
+//	//更新
+//	if _, err = r.Conn.Do("hmset", "jobs", oldJob.JobId, jobStr); err != nil {
+//		return
+//	}
+//
+//	return nil
+//}
+//
+////先删除，然后再更新，直接更新开销太大
+//func (r *RedisManager) UpdateJob(jobs []*common.Job) (err error) {
+//	var (
+//		ids []string
+//		job *common.Job
+//	)
+//	ids = make([]string, 0)
+//	for _, job = range jobs {
+//		ids = append(ids, job.JobId)
+//	}
+//
+//	if err = r.DelJobs(ids); err != nil {
+//		return
+//	}
+//
+//	//插入
+//	for _, job = range jobs {
+//		if err = r.AddJob(job); err != nil {
+//			return
+//		}
+//	}
+//
+//	return
+//}

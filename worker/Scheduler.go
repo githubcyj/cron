@@ -241,16 +241,16 @@ func (scheduler *Scheduler) OperateJobEvent(jobEvent *common.JobEvent) (err erro
 			GLogMgr.WriteLog("任务加入计划表：" + jobEvent.Job.Name)
 			scheduler.JobPlanTable[jobEvent.Job.Name] = jobSchedulePlan
 		}
-		if jobEvent.JobType == 1 { //如果是延时任务，延时任务只需要执行一次，所以直接加入任务执行表中
-			jobExecuteInfo = &common.JobExecuteInfo{
-				Job:          jobEvent.Job,
-				PlanTime:     jobEvent.Job.TimerExecuter,
-				ExcutingTime: nil,
-				CancelCtx:    nil,
-				CancelFunc:   nil,
-			}
-			scheduler.JobTimerTable[jobEvent.Job.JobId] = jobExecuteInfo
-		}
+		//if jobEvent.JobType == 1 { //如果是延时任务，延时任务只需要执行一次，所以直接加入任务执行表中
+		//	jobExecuteInfo = &common.JobExecuteInfo{
+		//		Job:          jobEvent.Job,
+		//		PlanTime:     jobEvent.Job.TimerExecuter,
+		//		ExcutingTime: nil,
+		//		CancelCtx:    nil,
+		//		CancelFunc:   nil,
+		//	}
+		//	scheduler.JobTimerTable[jobEvent.Job.JobId] = jobExecuteInfo
+		//}
 	case common.DELETE_JOB_EVENT:
 		GLogMgr.WriteLog("将任务从计划表中删除：" + jobEvent.Job.String())
 		delete(GScheduler.JobPlanTable, jobEvent.Job.Name)

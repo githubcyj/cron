@@ -2,10 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/22.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/33.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/11.txt" beforeDir="false" afterPath="$PROJECT_DIR$/11.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/11.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/22.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/33.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/main/master.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/main/master.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/DBManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/DBManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/InitManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/InitManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/RedisManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/router/route.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/server/ApiServer.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/ApiServer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/Scheduler.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/Scheduler.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
