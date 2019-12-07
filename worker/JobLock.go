@@ -3,6 +3,7 @@ package worker
 import (
 	"context"
 	"crontab/common"
+	"crontab/constants"
 	"go.etcd.io/etcd/clientv3"
 )
 
@@ -80,7 +81,7 @@ func (jobLock *JobLock) TryLock() (err error) {
 	txn = jobLock.Kv.Txn(context.TODO())
 
 	//锁路径
-	lockKey = common.JOB_LOCK_DIR + jobLock.JobName
+	lockKey = constants.JOB_LOCK_DIR + jobLock.JobName
 
 	//事务抢锁
 	//判断是否已经上锁

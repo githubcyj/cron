@@ -55,9 +55,9 @@ func main() {
 	}
 
 	//启动延时任务监听
-	if err = worker.InitMq(); err != nil {
-		goto ERR
-	}
+	//if err = worker.InitMq(); err != nil {
+	//	goto ERR
+	//}
 
 	for {
 		time.Sleep(1 * time.Second)

@@ -1,11 +1,8 @@
 package manager
 
 import (
-	"crontab/common"
-	"encoding/json"
+	"crontab/constants"
 	"github.com/streadway/amqp"
-	"strconv"
-	"time"
 )
 
 /**
@@ -37,7 +34,7 @@ func InitMq() (err error) {
 	//defer ch.Close()
 
 	//声明交换器
-	if err = ch.ExchangeDeclare(common.DELAY_EXCHANGE, "topic", true, false, false, false, nil); err != nil {
+	if err = ch.ExchangeDeclare(constants.DELAY_EXCHANGE, "topic", true, false, false, false, nil); err != nil {
 		return
 	}
 
@@ -49,38 +46,39 @@ func InitMq() (err error) {
 	return
 }
 
-//将任务推送到消息队列
-func (m *MgMgrProduce) PushMq(job *common.Job) (err error) {
-	var (
-		jobStr []byte
-		now    time.Time
-		diff   time.Duration
-	)
-	//序列化
-	if jobStr, err = json.Marshal(job); err != nil {
-		return
-	}
-	//设置过期时间
-	loc, _ := time.LoadLocation("Local")
-	the_time, _ := time.ParseInLocation("2006-01-02 15:04:05", job.TimerExecuter, loc)
-
-	//获取当前时间
-	now = time.Now()
-	//与当前时间的差
-	diff = now.Sub(the_time)
-
-	if err = m.Ch.Publish(
-		common.DELAY_EXCHANGE,
-		common.DELAY_KEY,
-		false,
-		false,
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        jobStr,
-			Expiration:  strconv.FormatFloat(diff.Seconds(), 'E', -1, 64), //设置过期时间
-		},
-	); err != nil {
-		return
-	}
-	return
-}
+//
+////将任务推送到消息队列
+//func (m *MgMgrProduce) PushMq(job *common.Job) (err error) {
+//	var (
+//		jobStr []byte
+//		now    time.Time
+//		diff   time.Duration
+//	)
+//	//序列化
+//	if jobStr, err = json.Marshal(job); err != nil {
+//		return
+//	}
+//	//设置过期时间
+//	loc, _ := time.LoadLocation("Local")
+//	the_time, _ := time.ParseInLocation("2006-01-02 15:04:05", job.TimerExecuter, loc)
+//
+//	//获取当前时间
+//	now = time.Now()
+//	//与当前时间的差
+//	diff = now.Sub(the_time)
+//
+//	if err = m.Ch.Publish(
+//		constants.DELAY_EXCHANGE,
+//		constants.DELAY_KEY,
+//		false,
+//		false,
+//		amqp.Publishing{
+//			ContentType: "text/plain",
+//			Body:        jobStr,
+//			Expiration:  strconv.FormatFloat(diff.Seconds(), 'E', -1, 64), //设置过期时间
+//		},
+//	); err != nil {
+//		return
+//	}
+//	return
+//}

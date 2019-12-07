@@ -3,6 +3,9 @@ package worker
 import (
 	"context"
 	"crontab/common"
+	"crontab/constants"
+	"crontab/model"
+	"encoding/json"
 	"go.etcd.io/etcd/clientv3"
 	"go.etcd.io/etcd/mvcc/mvccpb"
 	"strconv"
@@ -61,7 +64,7 @@ func InitJobMgr() (err error) {
 
 	go GJobMgr.watchKill()
 
-	go GJobMgr.WatchDel()
+	//go GJobMgr.WatchDel()
 
 	return
 }
@@ -76,11 +79,12 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 		getResp         *clientv3.GetResponse
 		watcherRevision int64
 		keyPair         *mvccpb.KeyValue
-		job             *common.Job
+		job             *model.Pipeline
 		jobEvent        *common.JobEvent
+		pipeline        *model.Pipeline
 	)
 
-	jobKey = common.SAVE_JOB_DIR
+	jobKey = constants.SAVE_JOB_DIR
 
 	//创建一个wacher
 	watcher = jobMgr.watcher
@@ -92,25 +96,14 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 	GLogMgr.WriteLog("从etcd中读取到的任务总数：" + strconv.Itoa(len(getResp.Kvs)))
 	//如果etcd中有任务，则需要通知调度协程去调度
 	for _, keyPair = range getResp.Kvs {
-		//从redis中查询任务
-		if job, err = GRedis.GetSingleJob(string(keyPair.Value)); err != nil {
-			return
+		pipeline = &model.Pipeline{}
+		//反序列化
+		if err = json.Unmarshal(keyPair.Value, pipeline); err != nil {
+			GLogMgr.WriteLog("解析etcd中的任务出错：" + err.Error())
 		}
-
-		//redis中没有任务，则查询数据库
-		if job == nil {
-			if job, err = GDB.GetSingleJob(string(keyPair.Value)); err != nil {
-				return
-			}
-			//数据库中没有数据，则直接返回
-			if job == nil {
-				return
-			}
-		}
-
-		//GLogMgr.WriteLog("从etcd读取到的任务：" + job.String())
+		GLogMgr.WriteLog("从etcd读取到的任务：" + pipeline.Name)
 		//创建jobEvent
-		jobEvent = common.BuildJobEvent(job, common.SAVE_JOB_EVENT)
+		jobEvent = common.BuildJobEvent(pipeline, constants.SAVE_JOB_EVENT)
 		//通知调度协程
 		GScheduler.PushScheduler(jobEvent)
 	}
@@ -120,9 +113,7 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 		var (
 			watchResp clientv3.WatchResponse
 			event     *clientv3.Event
-			job       *common.Job
 			jobEvent  *common.JobEvent
-			jobName   string
 		)
 		watcherRevision = getResp.Header.Revision + 1
 
@@ -132,22 +123,24 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 				switch event.Type {
 				case mvccpb.PUT: //如果是put操作
 					GLogMgr.WriteLog("添加任务，任务：" + string(event.Kv.Value))
-					if job, err = GRedis.GetSingleJob(string(event.Kv.Value)); err != nil {
+					//反序列化
+					if err = json.Unmarshal(event.Kv.Value, pipeline); err != nil {
+						GLogMgr.WriteLog("解析流水线出错：" + err.Error())
 						return
 					}
 					//判断任务类型
 					//构建任务事件
-					jobEvent = common.BuildJobEvent(job, common.SAVE_JOB_EVENT)
+					jobEvent = common.BuildJobEvent(job, constants.SAVE_JOB_EVENT)
 				case mvccpb.DELETE: //如果是del操作
 					//GLogMgr.WriteLog("删除任务，任务：" + string(event.Kv.Key))
 
-					//需要从/cron/job/save/job2中提取出job2
-					jobName = common.ExtracJobName(string(event.Kv.Key))
-					job = &common.Job{
-						Name: jobName,
-					}
-					//构建任务事件
-					jobEvent = common.BuildJobEvent(job, common.DELETE_JOB_EVENT)
+					////需要从/cron/job/save/job2中提取出job2
+					//jobName = common.ExtracJobName(string(event.Kv.Key))
+					//job = &common.Job{
+					//	Name: jobName,
+					//}
+					////构建任务事件
+					//jobEvent = common.BuildJobEvent(job, constants.DELETE_JOB_EVENT)
 				}
 			}
 
@@ -162,21 +155,21 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 //监听强杀任务
 func (jobMgr *JobMgr) watchKill() {
 	var (
-		watcher   clientv3.Watcher
-		killDir   string
-		watchChan clientv3.WatchChan
-		watchResp clientv3.WatchResponse
-		event     *clientv3.Event
-		jobName   string
-		job       *common.Job
-		jobEvent  *common.JobEvent
+		watcher    clientv3.Watcher
+		killDir    string
+		watchChan  clientv3.WatchChan
+		watchResp  clientv3.WatchResponse
+		event      *clientv3.Event
+		jobEvent   *common.JobEvent
+		pipeliine  *model.Pipeline
+		pipelineId string
 	)
 
 	//创建一个监听者
 	watcher = jobMgr.watcher
 
 	//强杀任务目录
-	killDir = common.KILL_JOB_DIR
+	killDir = constants.KILL_JOB_DIR
 
 	//创建一个协程来消费
 	go func() {
@@ -189,12 +182,10 @@ func (jobMgr *JobMgr) watchKill() {
 				case mvccpb.PUT: // 杀死某个任务的事件
 					GLogMgr.WriteLog("监听到强杀任务")
 					//获得对应的任务名
-					jobName = common.ExtracKillJob(string(event.Kv.Key))
-					job = &common.Job{
-						Name: jobName,
-					}
+					pipelineId = common.ExtracKillJob(string(event.Kv.Key))
+					pipeliine = &model.Pipeline{PipelineId: pipelineId}
 					//构建任务事件
-					jobEvent = common.BuildJobEvent(job, common.KILL_JOB_EVENT)
+					jobEvent = common.BuildJobEvent(pipeliine, constants.KILL_JOB_EVENT)
 					//通知调度器
 					GScheduler.PushScheduler(jobEvent)
 				}
@@ -204,48 +195,48 @@ func (jobMgr *JobMgr) watchKill() {
 
 }
 
-//监听删除任务
-func (jobMgr *JobMgr) WatchDel() {
-	var (
-		watcher   clientv3.Watcher
-		delDir    string
-		watchChan clientv3.WatchChan
-		watchResp clientv3.WatchResponse
-		event     *clientv3.Event
-		jobId     string
-		job       *common.Job
-		jobEvent  *common.JobEvent
-		err       error
-	)
-
-	//创建一个监听者
-	watcher = jobMgr.watcher
-
-	//强杀任务目录
-	delDir = common.JOB_DEl_DIR
-
-	//创建一个协程来消费
-	go func() {
-		//监听该目录后续变化
-		watchChan = watcher.Watch(context.TODO(), delDir, clientv3.WithPrefix())
-		for watchResp = range watchChan {
-			for _, event = range watchResp.Events {
-				switch event.Type {
-				//强杀任务
-				case mvccpb.PUT: // 杀死某个任务的事件
-					GLogMgr.WriteLog("监听到删除任务")
-					//获得对应的任务名
-					jobId = string(event.Kv.Value)
-					//从redis中获取job
-					if job, err = GRedis.GetSingleJob(jobId); err != nil {
-						GLogMgr.WriteLog("从redis中查找任务失败，任务id:" + jobId)
-					}
-					//构建任务事件
-					jobEvent = common.BuildJobEvent(job, common.DELETE_JOB_EVENT)
-					//通知调度器
-					GScheduler.PushScheduler(jobEvent)
-				}
-			}
-		}
-	}()
-}
+//
+////监听删除任务
+//func (jobMgr *JobMgr) WatchDel() {
+//	var (
+//		watcher   clientv3.Watcher
+//		delDir    string
+//		watchChan clientv3.WatchChan
+//		watchResp clientv3.WatchResponse
+//		event     *clientv3.Event
+//		jobId     string
+//		jobEvent  *common.JobEvent
+//		err       error
+//	)
+//
+//	//创建一个监听者
+//	watcher = jobMgr.watcher
+//
+//	//强杀任务目录
+//	delDir = constants.JOB_DEl_DIR
+//
+//	//创建一个协程来消费
+//	go func() {
+//		//监听该目录后续变化
+//		watchChan = watcher.Watch(context.TODO(), delDir, clientv3.WithPrefix())
+//		for watchResp = range watchChan {
+//			for _, event = range watchResp.Events {
+//				switch event.Type {
+//				//强杀任务
+//				case mvccpb.PUT: // 杀死某个任务的事件
+//					GLogMgr.WriteLog("监听到删除任务")
+//					//获得对应的任务名
+//					jobId = string(event.Kv.Value)
+//					//从redis中获取job
+//					if job, err = GRedis.GetSingleJob(jobId); err != nil {
+//						GLogMgr.WriteLog("从redis中查找任务失败，任务id:" + jobId)
+//					}
+//					//构建任务事件
+//					jobEvent = common.BuildJobEvent(job, constants.DELETE_JOB_EVENT)
+//					//通知调度器
+//					GScheduler.PushScheduler(jobEvent)
+//				}
+//			}
+//		}
+//	}()
+//}

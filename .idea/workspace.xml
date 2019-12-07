@@ -2,12 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="增加创建任务接口">
-      <change afterPath="$PROJECT_DIR$/model/JobRecord.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/pipelineRecord.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/Comstants.go" beforeDir="false" afterPath="$PROJECT_DIR$/constants/Comstants.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/Protocol.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/Protocol.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/JobManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/JobManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/MasterManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MasterManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/MgMgrProduce.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MgMgrProduce.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/RedisManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/WorkMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/WorkMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/DBManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/DBManager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worker/ExecuteMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/ExecuteMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/JobLock.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/JobLock.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/JobMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/JobMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/LogMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/LogMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/MqMgrCustomer.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/MqMgrCustomer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/RedisManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/Register.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/Register.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worker/Scheduler.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/Scheduler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/main/Worker.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/main/Worker.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,19 +63,19 @@
     <property name="settings.editor.selected.configurable" value="goland.project.structure" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="F:\code\GOPATH\src\crontab\master\server" />
-      <recent name="F:\code\GOPATH\src\crontab\master" />
-      <recent name="F:\code\GOPATH\src\crontab\master\main" />
-      <recent name="F:\code\GOPATH\src\crontab\master\middleware" />
-      <recent name="F:\code\GOPATH\src\crontab\common" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="F:\code\GOPATH\src\crontab\master\manager" />
       <recent name="F:\code\GOPATH\src\crontab\master\router" />
       <recent name="F:\code\GOPATH\src\crontab\common" />
       <recent name="F:\code\GOPATH\src\crontab\worker" />
       <recent name="F:\code\GOPATH\src\crontab\master\main\webroot" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\code\GOPATH\src\crontab\constants" />
+      <recent name="F:\code\GOPATH\src\crontab\master\server" />
+      <recent name="F:\code\GOPATH\src\crontab\master" />
+      <recent name="F:\code\GOPATH\src\crontab\master\main" />
+      <recent name="F:\code\GOPATH\src\crontab\master\middleware" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -77,7 +90,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build crontab/master/main">
+  <component name="RunManager" selected="Go Build.go build crontab/worker/main">
     <configuration name="go build crontab/master/main" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="crontab" />
       <working_directory value="$PROJECT_DIR$/master/main" />
@@ -131,14 +144,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/worker/RedisManager.go</url>
-          <line>92</line>
-          <option name="timeStamp" value="104" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/master/server/PipelineJobService.go</url>
           <line>90</line>
           <option name="timeStamp" value="106" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/worker/Scheduler.go</url>
+          <line>243</line>
+          <option name="timeStamp" value="115" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/worker/Scheduler.go</url>
+          <line>59</line>
+          <option name="timeStamp" value="116" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

@@ -2,7 +2,7 @@ package manager
 
 import (
 	"context"
-	"crontab/common"
+	"crontab/constants"
 	"crontab/master"
 	"go.etcd.io/etcd/clientv3"
 	"time"
@@ -67,7 +67,7 @@ func (masterMgr *MasterMgr) voting() {
 		txnResp                *clientv3.TxnResponse
 	)
 
-	votingKey = common.JOB_JOB_MASTER
+	votingKey = constants.JOB_JOB_MASTER
 
 	if getResp, err = masterMgr.Client.Get(context.TODO(), votingKey, clientv3.WithPrefix()); err != nil {
 		return

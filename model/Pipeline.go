@@ -2,7 +2,7 @@ package model
 
 import (
 	"context"
-	"crontab/common"
+	"crontab/constants"
 	manager "crontab/master/manager"
 	"encoding/json"
 	"github.com/jinzhu/gorm"
@@ -134,7 +134,7 @@ func (p *Pipeline) SaveEtcd() (err error) {
 	)
 
 	//保存的路径
-	saveKey = common.SAVE_JOB_DIR + p.PipelineId
+	saveKey = constants.SAVE_JOB_DIR + p.PipelineId
 
 	//序列化
 	if pipeStr, err = json.Marshal(p); err != nil {
@@ -167,7 +167,7 @@ func (p *Pipeline) KillEtcd() (err error) {
 		leaseId        clientv3.LeaseID
 	)
 
-	killKey = common.KILL_JOB_DIR + p.PipelineId
+	killKey = constants.KILL_JOB_DIR + p.PipelineId
 
 	//让workder监听到一次put操作，创建一个租约让其稍后自动过期
 	if leaseGrantResp, err = manager.GJobMgr.Lease.Grant(context.TODO(), 1); err != nil {

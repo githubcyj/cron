@@ -1,9 +1,10 @@
 package worker
 
 import (
-	"crontab/common"
-	"encoding/json"
-	"fmt"
+	//"crontab/common"
+	"crontab/constants"
+	//"encoding/json"
+	//"fmt"
 	"github.com/streadway/amqp"
 )
 
@@ -39,7 +40,7 @@ func InitMq() (err error) {
 	defer ch.Close()
 
 	//声明交换器
-	if err = ch.ExchangeDeclare(common.DELAY_EXCHANGE, "topic", true, false, false, false, nil); err != nil {
+	if err = ch.ExchangeDeclare(constants.DELAY_EXCHANGE, "topic", true, false, false, false, nil); err != nil {
 		return
 	}
 
@@ -64,7 +65,7 @@ func InitMq() (err error) {
 		false,
 		amqp.Table{
 			//当消息过期时把消息发送到logs这个交换器
-			"x-dead-letter-exchange":    common.DELAY_EXCHANGE,
+			"x-dead-letter-exchange":    constants.DELAY_EXCHANGE,
 			"x-dead-letter-routing-key": "now.t",
 		},
 	); err != nil {
@@ -74,7 +75,7 @@ func InitMq() (err error) {
 	if err = ch.QueueBind(
 		qNow.Name,
 		"now.*",
-		common.DELAY_EXCHANGE,
+		constants.DELAY_EXCHANGE,
 		false,
 		nil,
 	); err != nil {
@@ -84,8 +85,8 @@ func InitMq() (err error) {
 	//再绑定一个队列
 	if err = ch.QueueBind(
 		qDelay.Name,
-		common.DELAY_KEY,
-		common.DELAY_EXCHANGE,
+		constants.DELAY_KEY,
+		constants.DELAY_EXCHANGE,
 		false,
 		nil,
 	); err != nil {
@@ -96,58 +97,59 @@ func InitMq() (err error) {
 		Ch:     ch,
 		QDelay: qNow,
 	}
-	go GMqMgrCustomer.listenMg()
+	//go GMqMgrCustomer.listenMg()
 	return
 }
 
-//监听队列
-func (m *MqMgrCustomer) listenMg() {
-	var (
-		msg  amqp.Delivery
-		msgs <-chan amqp.Delivery
-	)
-
-	msgs, _ = m.Ch.Consume(
-		m.QDelay.Name,
-		"",
-		true,
-		false,
-		false,
-		false,
-		nil,
-	)
-
-	go func() {
-		var (
-			job      *common.Job
-			err      error
-			jobEvent *common.JobEvent
-		)
-		for {
-			select {
-			case msg = <-msgs: //从消息队列中读取到任务
-				//反序列化
-				if err = json.Unmarshal(msg.Body, job); err != nil {
-					fmt.Println(err.Error())
-				}
-				//从redis中取出对应任务
-				if job, err = GRedis.GetSingleJob(job.JobId); err != nil {
-					//判断任务是否执行
-					if job.IsDel != 1 { //任务没有删除，则继续执行任务
-						//封装任务
-						jobEvent = common.BuildJobEvent(job, 1)
-					} else {
-						GLogMgr.WriteLog("任务已经删除")
-						return
-					}
-				} else {
-					GLogMgr.WriteLog("redis中没有相关任务")
-					return
-				}
-
-			}
-			//通知调度器
-			GScheduler.PushScheduler(jobEvent)
-		}
-	}()
-}
+//
+////监听队列
+//func (m *MqMgrCustomer) listenMg() {
+//	var (
+//		msg  amqp.Delivery
+//		msgs <-chan amqp.Delivery
+//	)
+//
+//	msgs, _ = m.Ch.Consume(
+//		m.QDelay.Name,
+//		"",
+//		true,
+//		false,
+//		false,
+//		false,
+//		nil,
+//	)
+//
+//	go func() {
+//		var (
+//			job      *common.Job
+//			err      error
+//			jobEvent *common.JobEvent
+//		)
+//		for {
+//			select {
+//			case msg = <-msgs: //从消息队列中读取到任务
+//				//反序列化
+//				if err = json.Unmarshal(msg.Body, job); err != nil {
+//					fmt.Println(err.Error())
+//				}
+//				//从redis中取出对应任务
+//				if job, err = GRedis.GetSingleJob(job.JobId); err != nil {
+//					//判断任务是否执行
+//					if job.IsDel != 1 { //任务没有删除，则继续执行任务
+//						//封装任务
+//						jobEvent = common.BuildJobEvent(job, 1)
+//					} else {
+//						GLogMgr.WriteLog("任务已经删除")
+//						return
+//					}
+//				} else {
+//					GLogMgr.WriteLog("redis中没有相关任务")
+//					return
+//				}
+//
+//			}
+//			//通知调度器
+//			GScheduler.PushScheduler(jobEvent)
+//		}
+//	}()
+//}

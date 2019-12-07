@@ -2,7 +2,7 @@ package worker
 
 import (
 	"context"
-	"crontab/common"
+	"crontab/constants"
 	"go.etcd.io/etcd/clientv3"
 	"net"
 	"time"
@@ -59,7 +59,7 @@ func (register *Register) RegisterWorker() (err error) {
 	}
 
 	//注册的地址
-	registerKey = common.JOB_WORKER_DIR + ip
+	registerKey = constants.JOB_WORKER_DIR + ip
 
 	cancelCtx, cancelFunc = context.WithCancel(context.TODO())
 

@@ -111,7 +111,7 @@ func (logMgr *LogMgr) Append(log *common.JobLog) {
 	logMgr.logChan <- log
 }
 
-func (logMgr *LogMgr) WriteLog(msg string) {
+func (logMgr *LogMgr) WriteLog(msg ...interface{}) {
 
 	log.Println(msg)
 }

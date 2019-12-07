@@ -1,10 +1,7 @@
 package manager
 
 import (
-	"crontab/common"
 	"crontab/master"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"time"
@@ -52,108 +49,109 @@ func InitRedis() {
 	}
 }
 
-//添加单个job到redis中
-func (r *RedisManager) AddJob(job *common.Job) (err error) {
-
-	var (
-		jobArr []byte
-	)
-	//序列化json
-	if jobArr, err = json.Marshal(job); err != nil {
-		return
-	}
-
-	if _, err = r.Conn.Do("HMSET", "jobs", job.JobId, jobArr); err != nil {
-		return err
-	}
-	return
-}
-
-//从redis中获取所有job
-func (r *RedisManager) GetAllJobs() (jobArr []*common.Job, err error) {
-	var (
-		datas  []interface{}
-		job    *common.Job
-		data   interface{}
-		ok     bool
-		d      interface{}
-		jobStr []byte
-	)
-	jobArr = make([]*common.Job, 0)
-	if data, err = r.Conn.Do("HVALS", "jobs"); err != nil {
-		GLogMgr.WriteLog("从数据库中获取数据失败，失败原因：" + err.Error())
-		return jobArr, err
-	}
-	if datas, ok = data.([]interface{}); !ok {
-		return jobArr, errors.New("类型错误")
-	}
-
-	for _, d = range datas {
-		jobStr = d.([]byte)
-		job = &common.Job{}
-		//反序列化
-		if err = json.Unmarshal(jobStr, job); err != nil {
-			return jobArr, err
-		}
-		if job.IsDel != 1 {
-			jobArr = append(jobArr, job)
-		}
-	}
-
-	return jobArr, nil
-}
-
-//从redis中获取所有job
-func (r *RedisManager) GetAllDeleteJobs() (jobArr []*common.Job, err error) {
-	var (
-		datas  []interface{}
-		job    *common.Job
-		data   interface{}
-		ok     bool
-		d      interface{}
-		jobStr []byte
-	)
-	jobArr = make([]*common.Job, 0)
-	if data, err = r.Conn.Do("HVALS", "jobs"); err != nil {
-		GLogMgr.WriteLog("从数据库中获取数据失败，失败原因：" + err.Error())
-		return jobArr, err
-	}
-	if datas, ok = data.([]interface{}); !ok {
-		return jobArr, errors.New("类型错误")
-	}
-
-	for _, d = range datas {
-		jobStr = d.([]byte)
-		job = &common.Job{}
-		//反序列化
-		if err = json.Unmarshal(jobStr, job); err != nil {
-			return jobArr, err
-		}
-		if job.IsDel == 1 {
-			jobArr = append(jobArr, job)
-		}
-	}
-
-	return jobArr, nil
-}
-
-//保存所有的job到redis中
-func (r *RedisManager) AddAllJob(jobs []*common.Job) {
-	var (
-		job  *common.Job
-		err  error
-		data []byte
-	)
-
-	//将所有的任务放进redi中
-	for _, job = range jobs {
-		//序列化
-		data, _ = json.Marshal(job)
-		if _, err = r.Conn.Do("HMSET", "jobs", job.JobId, data); err != nil {
-			continue
-		}
-	}
-}
+//
+////添加单个job到redis中
+//func (r *RedisManager) AddJob(job *common.Job) (err error) {
+//
+//	var (
+//		jobArr []byte
+//	)
+//	//序列化json
+//	if jobArr, err = json.Marshal(job); err != nil {
+//		return
+//	}
+//
+//	if _, err = r.Conn.Do("HMSET", "jobs", job.JobId, jobArr); err != nil {
+//		return err
+//	}
+//	return
+//}
+//
+////从redis中获取所有job
+//func (r *RedisManager) GetAllJobs() (jobArr []*common.Job, err error) {
+//	var (
+//		datas  []interface{}
+//		job    *common.Job
+//		data   interface{}
+//		ok     bool
+//		d      interface{}
+//		jobStr []byte
+//	)
+//	jobArr = make([]*common.Job, 0)
+//	if data, err = r.Conn.Do("HVALS", "jobs"); err != nil {
+//		GLogMgr.WriteLog("从数据库中获取数据失败，失败原因：" + err.Error())
+//		return jobArr, err
+//	}
+//	if datas, ok = data.([]interface{}); !ok {
+//		return jobArr, errors.New("类型错误")
+//	}
+//
+//	for _, d = range datas {
+//		jobStr = d.([]byte)
+//		job = &common.Job{}
+//		//反序列化
+//		if err = json.Unmarshal(jobStr, job); err != nil {
+//			return jobArr, err
+//		}
+//		if job.IsDel != 1 {
+//			jobArr = append(jobArr, job)
+//		}
+//	}
+//
+//	return jobArr, nil
+//}
+//
+////从redis中获取所有job
+//func (r *RedisManager) GetAllDeleteJobs() (jobArr []*common.Job, err error) {
+//	var (
+//		datas  []interface{}
+//		job    *common.Job
+//		data   interface{}
+//		ok     bool
+//		d      interface{}
+//		jobStr []byte
+//	)
+//	jobArr = make([]*common.Job, 0)
+//	if data, err = r.Conn.Do("HVALS", "jobs"); err != nil {
+//		GLogMgr.WriteLog("从数据库中获取数据失败，失败原因：" + err.Error())
+//		return jobArr, err
+//	}
+//	if datas, ok = data.([]interface{}); !ok {
+//		return jobArr, errors.New("类型错误")
+//	}
+//
+//	for _, d = range datas {
+//		jobStr = d.([]byte)
+//		job = &common.Job{}
+//		//反序列化
+//		if err = json.Unmarshal(jobStr, job); err != nil {
+//			return jobArr, err
+//		}
+//		if job.IsDel == 1 {
+//			jobArr = append(jobArr, job)
+//		}
+//	}
+//
+//	return jobArr, nil
+//}
+//
+////保存所有的job到redis中
+//func (r *RedisManager) AddAllJob(jobs []*common.Job) {
+//	var (
+//		job  *common.Job
+//		err  error
+//		data []byte
+//	)
+//
+//	//将所有的任务放进redi中
+//	for _, job = range jobs {
+//		//序列化
+//		data, _ = json.Marshal(job)
+//		if _, err = r.Conn.Do("HMSET", "jobs", job.JobId, data); err != nil {
+//			continue
+//		}
+//	}
+//}
 
 //
 ////更新单个job

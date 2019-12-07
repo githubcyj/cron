@@ -1,4 +1,4 @@
-package common
+package constants
 
 const (
 	SAVE_JOB_DIR = "/cron/job/save/"

@@ -2,8 +2,8 @@ package common
 
 import (
 	"context"
+	"crontab/constants"
 	"crontab/model"
-	"fmt"
 	"github.com/gorhill/cronexpr"
 	"strings"
 	"time"
@@ -123,12 +123,12 @@ func BuildJobExecuteInfo(jobSchedulePlan *JobSchedulePlan) (jobExecuteInfo *JobE
 }
 
 //构建任务事件
-func BuildJobEvent(job *Job, event int) (jobEvent *JobEvent) {
+func BuildJobEvent(pipeline *model.Pipeline, event int) (jobEvent *JobEvent) {
 
 	jobEvent = &JobEvent{
-		Job:     job,
-		Event:   event,
-		JobType: job.Type,
+		Pipeline: pipeline,
+		Event:    event,
+		Type:     pipeline.Type,
 	}
 
 	return
@@ -147,13 +147,13 @@ func BuildResponse(errno int, msg string, data interface{}) HttpReply {
 }
 
 func ExtracJobName(name string) string {
-	return strings.TrimPrefix(name, SAVE_JOB_DIR)
+	return strings.TrimPrefix(name, constants.SAVE_JOB_DIR)
 }
 
 func ExtracWorkIp(name string) string {
-	return strings.TrimPrefix(name, JOB_WORKER_DIR)
+	return strings.TrimPrefix(name, constants.JOB_WORKER_DIR)
 }
 
 func ExtracKillJob(name string) string {
-	return strings.TrimPrefix(name, KILL_JOB_DIR)
+	return strings.TrimPrefix(name, constants.KILL_JOB_DIR)
 }
