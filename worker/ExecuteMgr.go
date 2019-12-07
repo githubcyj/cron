@@ -72,6 +72,10 @@ func (executor *Executor) ExecJob(jobExecuteInfo *common.JobExecuteInfo, Job *mo
 	)
 	jobRecord = &model.JobRecord{}
 	startTime = time.Now()
+	resChan = make(chan struct {
+		output string
+		err    error
+	})
 	go func() {
 		cmd = exec.CommandContext(jobExecuteInfo.CancelCtx, "C:\\Windows\\System32\\bash.exe", "-c", Job.Command)
 		output, err = cmd.CombinedOutput()
@@ -80,9 +84,9 @@ func (executor *Executor) ExecJob(jobExecuteInfo *common.JobExecuteInfo, Job *mo
 			err    error
 		}{output: string(output), err: err}
 	}()
-	GLogMgr.WriteLog("任务执行完成，输出：" + res.output)
 	endTime = time.Now()
 	res = <-resChan
+	GLogMgr.WriteLog("任务执行完成，输出：" + res.output)
 	jobRecord.Content = Job.Command
 	jobRecord.Result = res.output
 	jobRecord.JobId = Job.JobId

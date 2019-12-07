@@ -3,6 +3,7 @@ package worker
 import (
 	"context"
 	"crontab/common"
+	"crontab/constants"
 	"crontab/model"
 	"strconv"
 	"time"
@@ -56,7 +57,7 @@ func (scheduler *Scheduler) SchedulerLoop() {
 			scheduler.OperateJobEvent(jobEvent)
 		case <-timer.C:
 		case jobResult = <-scheduler.JobResultChan: //监听结果任务队列
-			if jobResult.PiplineRecord.Type == common.CRON_JOB_TYPE {
+			if jobResult.PiplineRecord.Type == constants.CRON_JOB_TYPE {
 				//任务执行完毕，需要从任务执行队列中删除任务
 				GLogMgr.WriteLog("任务执行完毕，从任务执行表中删除，任务：" + jobResult.PiplineRecord.PipelineName)
 				delete(scheduler.JobExecutingTable, jobResult.PiplineRecord.PipelineId)
@@ -143,7 +144,6 @@ func (scheduler *Scheduler) TrySchedule() (timeAfter time.Duration) {
 			//GLogMgr.WriteLog("结束执行任务：" + jobSchedulePlan.Job.String())
 			//更新任务的下次执行时间
 			jobSchedulePlan.NextTime = jobSchedulePlan.Expr.Next(now)
-			//GLogMgr.WriteLog("任务：" + jobSchedulePlan.Job.Name + "的下次执行时间：" + jobSchedulePlan.NextTime.String())
 		}
 
 		//统计最近一个要过期的任务时间
@@ -219,7 +219,7 @@ func (scheduler *Scheduler) TryStartJob(jobSchedulePlan *common.JobSchedulePlan)
 	scheduler.JobExecutingTable[jobExecuteInfo.Pipeline.PipelineId] = jobExecuteInfo
 	GLogMgr.WriteLog(jobExecuteInfo.Pipeline.Name + "加入任务执行表")
 	startTime = time.Now() //流水线开始执行时间
-	pipelineRecord = &model.PipelineRecord{}
+	pipelineRecord = &model.PipelineRecord{Status: 1}
 	//执行流水线中绑定的任务
 	for _, pipelineJob = range jobExecuteInfo.Pipeline.Steps {
 		if pipelineJob.Timeout == 0 {
@@ -244,11 +244,12 @@ END:
 	if pipelineRecord.Status == 0 { //流水线执行失败
 		if jobExecuteInfo.Pipeline.Failed != "" {
 			//执行失败时任务
-			GExecutor.ExecJob(jobExecuteInfo, jobExecuteInfo.Pipeline.FailedJob)
 			GLogMgr.WriteLog("流水线执行失败，执行失败时任务")
+			GExecutor.ExecJob(jobExecuteInfo, jobExecuteInfo.Pipeline.FailedJob)
 		}
 	} else { //流水线执行成功
 		if jobExecuteInfo.Pipeline.Finished != "" {
+			GLogMgr.WriteLog("流水线执行成功，执行成功时任务")
 			//执行成功时任务
 			GExecutor.ExecJob(jobExecuteInfo, jobExecuteInfo.Pipeline.FinishedJob)
 		}
@@ -288,7 +289,7 @@ func (scheduler *Scheduler) OperateJobEvent(jobEvent *common.JobEvent) (err erro
 	)
 	//如果是添加任务事件，则向planTable中增加一个事件
 	switch jobEvent.Event {
-	case common.SAVE_JOB_EVENT:
+	case constants.SAVE_JOB_EVENT:
 		if jobEvent.Type == 0 { //如果是定时任务
 			if jobSchedulePlan, err = common.BuildJobSchedulePlan(jobEvent.Pipeline); err != nil {
 				GLogMgr.WriteLog("流水线加入计划表出错：" + jobEvent.Pipeline.Name)
@@ -296,6 +297,7 @@ func (scheduler *Scheduler) OperateJobEvent(jobEvent *common.JobEvent) (err erro
 			}
 			GLogMgr.WriteLog("流水线加入计划表：" + jobEvent.Pipeline.Name)
 			scheduler.JobPlanTable[jobEvent.Pipeline.PipelineId] = jobSchedulePlan
+			GLogMgr.WriteLog("当前计划表中任务数：", len(scheduler.JobPlanTable))
 		}
 		//if jobEvent.JobType == 1 { //如果是延时任务，延时任务只需要执行一次，所以直接加入任务执行表中
 		//	jobExecuteInfo = &common.JobExecuteInfo{
@@ -307,10 +309,10 @@ func (scheduler *Scheduler) OperateJobEvent(jobEvent *common.JobEvent) (err erro
 		//	}
 		//	scheduler.JobTimerTable[jobEvent.Job.JobId] = jobExecuteInfo
 		//}
-	case common.DELETE_JOB_EVENT:
+	case constants.DELETE_JOB_EVENT:
 		GLogMgr.WriteLog("将流水线从计划表中删除：" + jobEvent.Pipeline.Name)
 		delete(GScheduler.JobPlanTable, jobEvent.Pipeline.PipelineId)
-	case common.KILL_JOB_EVENT: //强杀任务
+	case constants.KILL_JOB_EVENT: //强杀任务
 		//将流水线从计划表中删除
 		delete(GScheduler.JobPlanTable, jobEvent.Pipeline.PipelineId)
 		GLogMgr.WriteLog("流水线" + jobEvent.Pipeline.PipelineId + "被强杀")
