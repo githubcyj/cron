@@ -79,7 +79,6 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 		getResp         *clientv3.GetResponse
 		watcherRevision int64
 		keyPair         *mvccpb.KeyValue
-		job             *model.Pipeline
 		jobEvent        *common.JobEvent
 		pipeline        *model.Pipeline
 	)
@@ -124,13 +123,14 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 				case mvccpb.PUT: //如果是put操作
 					GLogMgr.WriteLog("添加任务，任务：" + string(event.Kv.Value))
 					//反序列化
+					pipeline = &model.Pipeline{}
 					if err = json.Unmarshal(event.Kv.Value, pipeline); err != nil {
 						GLogMgr.WriteLog("解析流水线出错：" + err.Error())
 						return
 					}
 					//判断任务类型
 					//构建任务事件
-					jobEvent = common.BuildJobEvent(job, constants.SAVE_JOB_EVENT)
+					jobEvent = common.BuildJobEvent(pipeline, constants.SAVE_JOB_EVENT)
 				case mvccpb.DELETE: //如果是del操作
 					//GLogMgr.WriteLog("删除任务，任务：" + string(event.Kv.Key))
 
@@ -182,7 +182,7 @@ func (jobMgr *JobMgr) watchKill() {
 				case mvccpb.PUT: // 杀死某个任务的事件
 					GLogMgr.WriteLog("监听到强杀任务")
 					//获得对应的任务名
-					pipelineId = common.ExtracKillJob(string(event.Kv.Key))
+					pipelineId = string(event.Kv.Value)
 					pipeliine = &model.Pipeline{PipelineId: pipelineId}
 					//构建任务事件
 					jobEvent = common.BuildJobEvent(pipeliine, constants.KILL_JOB_EVENT)

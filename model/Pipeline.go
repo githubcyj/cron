@@ -185,7 +185,7 @@ func (p *Pipeline) KillEtcd() (err error) {
 
 	leaseId = leaseGrantResp.ID
 
-	if putResp, err = manager.GJobMgr.Kv.Put(context.TODO(), killKey, "", clientv3.WithLease(leaseId)); err != nil {
+	if putResp, err = manager.GJobMgr.Kv.Put(context.TODO(), killKey, p.PipelineId, clientv3.WithLease(leaseId)); err != nil {
 		return
 	}
 
