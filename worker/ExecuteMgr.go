@@ -2,6 +2,7 @@ package worker
 
 import (
 	"crontab/common"
+	"crontab/constants"
 	"crontab/model"
 	"math/rand"
 	"os/exec"
@@ -61,6 +62,7 @@ func (executor *Executor) ExecJob(jobExecuteInfo *common.JobExecuteInfo, Job *mo
 		err       error
 		startTime time.Time
 		endTime   time.Time
+		path      string
 		resChan   chan struct {
 			output string
 			err    error
@@ -77,7 +79,12 @@ func (executor *Executor) ExecJob(jobExecuteInfo *common.JobExecuteInfo, Job *mo
 		err    error
 	})
 	go func() {
-		cmd = exec.CommandContext(jobExecuteInfo.CancelCtx, "C:\\Windows\\System32\\bash.exe", "-c", Job.Command)
+		if Job.IsFile == 1 {
+			path = constants.FILE_PATH + Job.FileId
+			cmd = exec.CommandContext(jobExecuteInfo.CancelCtx, "C:\\Windows\\System32\\bash.exe", "-c", path)
+		} else {
+			cmd = exec.CommandContext(jobExecuteInfo.CancelCtx, "C:\\Windows\\System32\\bash.exe", "-c", Job.Command)
+		}
 		output, err = cmd.CombinedOutput()
 		resChan <- struct {
 			output string
@@ -92,6 +99,7 @@ func (executor *Executor) ExecJob(jobExecuteInfo *common.JobExecuteInfo, Job *mo
 	jobRecord.JobId = Job.JobId
 	jobRecord.BeginWith = startTime
 	jobRecord.FinishWith = endTime
+	jobRecord.JobName = Job.Name
 	jobRecord.Duration = int(endTime.Sub(startTime).Seconds())
 	if res.err != nil {
 		jobRecord.Status = 0

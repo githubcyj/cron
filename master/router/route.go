@@ -16,9 +16,11 @@ func Route(router *gin.Engine) {
 		//api.POST("/job/update", server.HandlerJobUpdate) //更新任务
 		//api.POST("/record/deleteForLogical", server.HandlerJobDeleteForLogical) //逻辑删除job
 
-		api.GET("/record/list", server.HandlerJobList)   //获取一个流水线下所有的job
-		api.POST("/job/delete", server.HandlerJobDelete) //物理删除一个流水线下的job
-		api.POST("/job/save", server.HandlerJobSave)     //创建job
+		api.GET("/record/list", server.HandlerJobList)        //获取一个流水线下所有的job
+		api.POST("/job/delete", server.HandlerJobDelete)      //物理删除一个流水线下的job
+		api.POST("/job/save", server.HandlerJobSave)          //创建job
+		api.POST("/job/save/file", server.HandlerJobSaveFile) //创建job,job内容为文件
+		api.POST("/job/uploader", server.HandlerJobFile)      //上传文件
 
 		api.POST("/create/pipelines", server.HandlerPipeCreate) //创建流水线
 		api.POST("/pipeline/job", server.HandlerPiplineJob)     //任务与流水线关联

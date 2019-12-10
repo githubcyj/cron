@@ -27,6 +27,8 @@ type Job struct {
 	UpdateCount    int    `json:"updateCount" gorm:"default:'0'` //更新计数
 	TimerExecuter  string `json:"timerExecuter"`                 //延时任务执行时间
 	ExecutionCount int    `json:"executionCount"`                //执行次数
+	IsFile         int    `json:"isFile"`                        //是否是文件任务
+	FileId         string `json:"fileId"`                        //文件id
 	Base
 }
 
