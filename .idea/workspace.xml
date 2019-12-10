@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="增加创建任务接口">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/Protocol.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/Protocol.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/MqMgrProduce.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MqMgrProduce.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/Pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/JobMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/JobMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker/Scheduler.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/Scheduler.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

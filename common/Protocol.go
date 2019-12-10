@@ -34,6 +34,7 @@ type JobSchedulePlan struct {
 	Pipeline *model.Pipeline      //要调度的任务
 	Expr     *cronexpr.Expression //解析好的执行计划
 	NextTime time.Time            //下次执行时间
+	Count    int                  //执行次数
 }
 
 //延时任务调度计划
@@ -65,6 +66,7 @@ func BuildJobSchedulePlan(pipeline *model.Pipeline) (jobSchedulePlan *JobSchedul
 		Pipeline: pipeline,
 		Expr:     cronExpr,
 		NextTime: cronExpr.Next(time.Now()),
+		Count:    pipeline.RunCount,
 	}
 
 	return

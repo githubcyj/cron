@@ -29,6 +29,7 @@ type Pipeline struct {
 	CronExpr       string `json:"cronExpr"`                      //定时任务：定时任务执行时间
 	IsDel          int    `json:"isDel" gorm:"default:'0'`       //0：流水线未删除，1：流水线已删除
 	UpdateCount    int    `json:"updateCount" gorm:"default:'0'` //更新计数
+	RunCount       int    `json:"runCount"`                      //流水线执行次数，即一共可以执行多少次 -1表示不限次数
 	TimerExecuter  string `json:"timerExecuter"`                 //延时任务执行时间
 	ExecutionCount int    `json:"executionCount"`                //执行次数
 	Finished       string `json:"finished"`                      //成功时执行的任务id

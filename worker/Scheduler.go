@@ -39,11 +39,12 @@ func InitScheduler() (err error) {
 
 func (scheduler *Scheduler) SchedulerLoop() {
 	var (
-		jobEvent   *common.JobEvent
-		jobResult  *common.JobExecuteResult
-		timerAfter time.Duration
-		timer      *time.Timer //这里设置定时器，是为了让之后的任务准时执行
-		//log        *common.JobLog
+		jobEvent        *common.JobEvent
+		jobResult       *common.JobExecuteResult
+		timerAfter      time.Duration
+		timer           *time.Timer //这里设置定时器，是为了让之后的任务准时执行
+		jobSchedulePlan *common.JobSchedulePlan
+		isExist         bool
 	)
 
 	timerAfter = GScheduler.TrySchedule()
@@ -62,6 +63,13 @@ func (scheduler *Scheduler) SchedulerLoop() {
 				//任务执行完毕，需要从任务执行队列中删除任务
 				GLogMgr.WriteLog("任务执行完毕，从任务执行表中删除，任务：" + jobResult.PiplineRecord.PipelineName)
 				delete(scheduler.JobExecutingTable, jobResult.PiplineRecord.PipelineId)
+				//判断执行次数
+				if jobSchedulePlan, isExist = scheduler.JobPlanTable[jobResult.PiplineRecord.PipelineId]; isExist {
+					if jobSchedulePlan.Count == 0 {
+						//从计划执行表中删除
+						delete(scheduler.JobPlanTable, jobResult.PiplineRecord.PipelineId)
+					}
+				}
 				//GLogMgr.WriteLog("任务执行表中任务个数：" + strconv.Itoa(len(scheduler.JobExecutingTable)))
 				for jobExecuteInfo, _ := range scheduler.JobExecutingTable {
 					GLogMgr.WriteLog("任务执行表中的任务：" + jobExecuteInfo)
@@ -122,13 +130,17 @@ func (scheduler *Scheduler) TrySchedule() (timeAfter time.Duration) {
 	for _, jobSchedulePlan = range GScheduler.JobPlanTable {
 		GLogMgr.WriteLog(jobSchedulePlan.Pipeline.Name + "的下次执行时间" + jobSchedulePlan.NextTime.String())
 		GLogMgr.WriteLog("当前时间：" + now.String())
-		if jobSchedulePlan.NextTime.Before(now) || jobSchedulePlan.NextTime.Equal(now) {
-			//尝试执行任务
-			GLogMgr.WriteLog("开始执行任务：" + jobSchedulePlan.Pipeline.Name)
-			scheduler.TryStartJob(jobSchedulePlan)
-			//GLogMgr.WriteLog("结束执行任务：" + jobSchedulePlan.Job.String())
-			//更新任务的下次执行时间
-			jobSchedulePlan.NextTime = jobSchedulePlan.Expr.Next(now)
+		if jobSchedulePlan.Count > 0 {
+			if jobSchedulePlan.NextTime.Before(now) || jobSchedulePlan.NextTime.Equal(now) {
+				//尝试执行任务
+				GLogMgr.WriteLog("开始执行任务：" + jobSchedulePlan.Pipeline.Name)
+				scheduler.TryStartJob(jobSchedulePlan)
+				//GLogMgr.WriteLog("结束执行任务：" + jobSchedulePlan.Job.String())
+				//更新任务的下次执行时间
+				jobSchedulePlan.NextTime = jobSchedulePlan.Expr.Next(now)
+				//更新任务执行次数
+				jobSchedulePlan.Count--
+			}
 		}
 
 		//统计最近一个要过期的任务时间

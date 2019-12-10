@@ -38,6 +38,8 @@ func InitMq() (err error) {
 		return
 	}
 
+	//ch.Confirm()
+
 	GMqMgrProduce = &MqMgrProduce{
 		Conn: conn,
 		Ch:   ch,
