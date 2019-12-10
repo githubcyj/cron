@@ -83,6 +83,13 @@ func (pipelineJob *PipelineJob) DelRedis() (err error) {
 	return
 }
 
+func (pipelineJob *PipelineJob) DelDB() (err error) {
+	if err = manager.GDB.DB.Where("pipeline_id=?", pipelineJob.PipelineId).Delete(&PipelineJob{}).Error; err != nil {
+		manager.GLogMgr.WriteLog("删除流水线与任务关联失败：" + err.Error())
+	}
+	return
+}
+
 func (pipelineJob *PipelineJob) GetPipelineJobLen() (len int, err error) {
 	var (
 		length int

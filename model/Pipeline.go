@@ -127,6 +127,13 @@ func (p *Pipeline) DelRedis() (err error) {
 	return
 }
 
+func (p *Pipeline) DelDB() (err error) {
+	if err = manager.GDB.DB.Where("pipeline_id=?", p.PipelineId).Delete(&Pipeline{}).Error; err != nil {
+		manager.GLogMgr.WriteLog("删除流水线失败：" + err.Error())
+	}
+	return
+}
+
 func (p *Pipeline) SaveEtcd() (err error) {
 	var (
 		saveKey     string

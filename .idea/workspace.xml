@@ -2,21 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="增加创建任务接口">
-      <change afterPath="$PROJECT_DIR$/file/2df3c230-0" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file/49a2d802-f" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file/8379532b-2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file/85fb9ef7-8" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file/923f8407-e" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file/9ce354e8-7" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file/d742fbfd-0" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/file/fafab1bd-1" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/manager/MqMgrProduce.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MqMgrProduce.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/server/JobService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/JobService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/router/route.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/server/PipeLineService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/PipeLineService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/File.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/File.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/Pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/job.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/job.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/pipeline_job.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/pipeline_job.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -87,7 +78,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build crontab/worker/main">
+  <component name="RunManager" selected="Go Build.go build crontab/master/main">
     <configuration name="go build crontab/master/main" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="crontab" />
       <working_directory value="$PROJECT_DIR$/master/main" />

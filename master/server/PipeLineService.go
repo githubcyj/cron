@@ -357,3 +357,51 @@ ERR:
 		"data": bytes,
 	})
 }
+
+//删除流水线
+func HandlerPipeDelete(c *gin.Context) {
+	var (
+		pipelineId  string
+		pipeline    *model.Pipeline
+		pipelineJob *model.PipelineJob
+		err         error
+		bytes       common.HttpReply
+	)
+
+	pipelineId = c.Query("pipelineId")
+	pipeline = &model.Pipeline{PipelineId: pipelineId}
+	pipelineJob = &model.PipelineJob{PipelineId: pipelineId}
+
+	//先删除redis中流水线
+	if err = pipeline.DelRedis(); err != nil {
+		goto ERR
+	}
+
+	//删除数据库中流水线
+	if err = pipeline.DelDB(); err != nil {
+		goto ERR
+	}
+
+	//删除流水线与任务关联
+	if err = pipelineJob.DelRedis(); err != nil {
+		goto ERR
+	}
+
+	if err = pipelineJob.DelDB(); err != nil {
+		goto ERR
+	}
+
+	//返回正常应答
+	bytes = common.BuildResponse(0, "success", pipelineId)
+	c.JSON(http.StatusOK, gin.H{
+		"data": bytes,
+	})
+	return
+
+ERR:
+	//返回错误应答
+	bytes = common.BuildResponse(-1, err.Error(), nil)
+	c.JSON(http.StatusOK, gin.H{
+		"data": bytes,
+	})
+}
