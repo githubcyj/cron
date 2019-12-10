@@ -27,7 +27,6 @@ func HandlerJobSave(c *gin.Context) {
 	if err := c.ShouldBindBodyWith(&job, binding.JSON); err != nil {
 		goto ERR
 	}
-
 	//保存job进入数据库
 	if err = job.SaveDB(); err != nil {
 		goto ERR
@@ -103,6 +102,44 @@ func HandlerJobUpdate(c *gin.Context) {
 	})
 
 ERR:
+	//返回错误应答
+	bytes = common.BuildResponse(-1, err.Error(), nil)
+	c.JSON(http.StatusOK, gin.H{
+		"data": bytes,
+	})
+}
+func HandlerJobSaveFile(c *gin.Context) {
+	var (
+		err   error
+		job   model.Job
+		old   *model.Job
+		bytes common.HttpReply
+		//postJob string
+	)
+	//解析post表单
+	if err := c.ShouldBindBodyWith(&job, binding.JSON); err != nil {
+		goto ERR
+	}
+
+	//保存job进入数据库
+	if err = job.SaveDB(); err != nil {
+		goto ERR
+	}
+
+	//保存job到redis中
+	if err = job.SaveRedis(); err != nil {
+		goto ERR
+	}
+
+	//返回正常应答
+	bytes = common.BuildResponse(0, "success", old)
+	c.JSON(http.StatusOK, gin.H{
+		"data": bytes,
+	})
+	return
+
+ERR:
+
 	//返回错误应答
 	bytes = common.BuildResponse(-1, err.Error(), nil)
 	c.JSON(http.StatusOK, gin.H{

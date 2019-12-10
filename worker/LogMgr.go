@@ -2,17 +2,14 @@ package worker
 
 import (
 	"crontab/common"
-	"fmt"
-	"gopkg.in/mgo.v2"
+	"crontab/model"
 	"log"
 	"time"
 )
 
 //mongo日志存储
 type LogMgr struct {
-	client         *mgo.Database
-	collection     *mgo.Collection
-	logChan        chan *common.JobLog
+	logChan        chan *common.JobExecuteResult
 	autoCommitChan chan *common.LogBatch //在这里面的需要立即提交
 }
 
@@ -21,23 +18,8 @@ var (
 )
 
 func InitLogMgr() (err error) {
-	var (
-		session    *mgo.Session
-		client     *mgo.Database
-		collection *mgo.Collection
-	)
-	//建立连接
-	if session, err = mgo.Dial("127.0.0.1:27017"); err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	client = session.DB("cron")
-	collection = client.C("log")
 	GLogMgr = &LogMgr{
-		client:         client,
-		collection:     collection,
-		logChan:        make(chan *common.JobLog, GConfig.AutoCommitCount),
+		logChan:        make(chan *common.JobExecuteResult, GConfig.AutoCommitCount),
 		autoCommitChan: make(chan *common.LogBatch, GConfig.AutoCommitCount),
 	}
 	go GLogMgr.writeLogLoop()
@@ -48,7 +30,7 @@ func InitLogMgr() (err error) {
 func (logMgr *LogMgr) writeLogLoop() {
 
 	var (
-		log          *common.JobLog
+		log          *common.JobExecuteResult
 		logBatch     *common.LogBatch
 		timeoutBatch *common.LogBatch
 		timer        *time.Timer
@@ -65,7 +47,6 @@ func (logMgr *LogMgr) writeLogLoop() {
 						return func() {
 							logMgr.autoCommitChan <- batch //写入自动提交队列
 						}
-
 					}(logBatch))
 			}
 
@@ -99,15 +80,25 @@ func (logMgr *LogMgr) writeLogLoop() {
 //向文件中写日志
 func (logMgr *LogMgr) saveLogs(batch *common.LogBatch) {
 	var (
-		err error
+		err              error
+		jobExecuteResult *common.JobExecuteResult
+		jobRecord        *model.JobRecord
 	)
-	if err = logMgr.collection.Insert(batch.Logs...); err != nil {
-		logMgr.WriteLog("写入数据库出错,err：" + err.Error())
+	for _, jobExecuteResult = range batch.Logs {
+		if err = GDB.DB.Create(jobExecuteResult.PiplineRecord).Error; err != nil {
+			logMgr.WriteLog("pipelineRecord插入失败：", err.Error())
+		}
+		for _, jobRecord = range jobExecuteResult.JobRecord {
+			if err = GDB.DB.Create(jobRecord).Error; err != nil {
+				logMgr.WriteLog("jobRecord插入失败：", err.Error())
+			}
+		}
 	}
+	logMgr.WriteLog("日志插入成功")
 }
 
 //存储日志到队列中
-func (logMgr *LogMgr) Append(log *common.JobLog) {
+func (logMgr *LogMgr) Append(log *common.JobExecuteResult) {
 	logMgr.logChan <- log
 }
 

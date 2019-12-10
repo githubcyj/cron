@@ -1,6 +1,8 @@
 package constants
 
 const (
+	FILE_PATH = "../../file/"
+
 	SAVE_JOB_DIR = "/cron/job/save/"
 
 	KILL_JOB_DIR = "/cron/job/kill/"

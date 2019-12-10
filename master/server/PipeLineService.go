@@ -2,6 +2,7 @@ package server
 
 import (
 	"crontab/common"
+	"crontab/constants"
 	"crontab/master/manager"
 	"crontab/model"
 	"database/sql"
@@ -328,8 +329,18 @@ func HandlerSyncEtcd(c *gin.Context) {
 	if pipelineR, err = pipeline.GetRedis(); err != nil {
 		goto ERR
 	}
-	if err = pipelineR.SaveEtcd(); err != nil {
-		goto ERR
+	//定时任务加入etcd立即执行
+	if pipelineR.Type == constants.CRON_JOB_TYPE {
+		if err = pipelineR.SaveEtcd(); err != nil {
+			goto ERR
+		}
+	}
+
+	//延时任务，则加入mq中等待延时时间到达执行
+	if pipelineR.Type == constants.DELAY_JOB_TYPE {
+		if err = manager.GMqMgrProduce.PushMq(pipelineR); err != nil {
+			goto ERR
+		}
 	}
 
 	//返回正常应答

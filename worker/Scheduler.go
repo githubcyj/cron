@@ -5,6 +5,7 @@ import (
 	"crontab/common"
 	"crontab/constants"
 	"crontab/model"
+	uuid "github.com/satori/go.uuid"
 	"strconv"
 	"time"
 )
@@ -57,7 +58,7 @@ func (scheduler *Scheduler) SchedulerLoop() {
 			scheduler.OperateJobEvent(jobEvent)
 		case <-timer.C:
 		case jobResult = <-scheduler.JobResultChan: //监听结果任务队列
-			if jobResult.PiplineRecord.Type == constants.CRON_JOB_TYPE {
+			if jobResult.PiplineRecord.Type == constants.CRON_JOB_TYPE || jobResult.PiplineRecord.Type == constants.DELAY_JOB_TYPE {
 				//任务执行完毕，需要从任务执行队列中删除任务
 				GLogMgr.WriteLog("任务执行完毕，从任务执行表中删除，任务：" + jobResult.PiplineRecord.PipelineName)
 				delete(scheduler.JobExecutingTable, jobResult.PiplineRecord.PipelineId)
@@ -71,25 +72,9 @@ func (scheduler *Scheduler) SchedulerLoop() {
 			//	delete(scheduler.JobTimerExecutingTable, jobResult.JobExecuteInfo.Job.Name)
 			//}
 			//将结果保存到日志
-			//go func() {
-			//	log = &common.JobLog{
-			//		JobName:      jobResult.JobExecuteInfo.Job.Name,
-			//		Command:      jobResult.JobExecuteInfo.Job.Command,
-			//		Output:       string(jobResult.Output),
-			//		PlanTime:     jobResult.JobExecuteInfo.PlanTime.Unix(),
-			//		SchedultTime: jobResult.JobExecuteInfo.ExcutingTime.Unix(),
-			//		StartTime:    jobResult.StartTime.Unix(),
-			//		EndTime:      jobResult.EndTime.Unix(),
-			//	}
-			//
-			//	if jobResult.Err == nil {
-			//		log.Err = ""
-			//	} else {
-			//		log.Err = jobResult.Err.Error()
-			//	}
-			//
-			//	GLogMgr.Append(log)
-			//}()
+			go func() {
+				GLogMgr.Append(jobResult)
+			}()
 		}
 		timerAfter = GScheduler.TrySchedule()
 		timer.Reset(timerAfter)
@@ -194,22 +179,10 @@ func (scheduler *Scheduler) TryStartJob(jobSchedulePlan *common.JobSchedulePlan)
 		cancelFunc       context.CancelFunc
 		startTime        time.Time
 		endTime          time.Time
+		uid              string
+		id               uuid.UUID
 	)
 
-	//1. 判断任务是否在执行中，如果任务在执行，则判断任务是否超过运行时间
-	//if jobExecuteInfo, jobExecuting = scheduler.JobExecutingTable[jobSchedulePlan.Job.Name]; jobExecuting {
-	//	//GLogMgr.WriteLog("判断任务是否超时：" + jobExecuteInfo.Job.Name)
-	//	runtime = time.Now().Sub(jobExecuteInfo.ExcutingTime)
-	//	realRuntime = time.Duration(GConfig.JobRuntime) * time.Millisecond
-	//	GLogMgr.WriteLog(jobExecuteInfo.Job.Name + "执行时间：" + runtime.String())
-	//	GLogMgr.WriteLog("realRuntime:" + realRuntime.String())
-	//	if realRuntime < runtime { //任务运行时间太长，杀死任务并重新调度
-	//		GLogMgr.WriteLog("任务超时，杀死任务：" + jobExecuteInfo.Job.Name)
-	//		jobExecuteInfo.CancelFunc()
-	//		delete(GScheduler.JobExecutingTable, jobExecuteInfo.Job.Name)
-	//	}
-	//	return
-	//}
 	jobExecuteResult = &common.JobExecuteResult{}
 	jobRecords = make([]*model.JobRecord, 0)
 	//2. 创建任务执行信息
@@ -219,7 +192,9 @@ func (scheduler *Scheduler) TryStartJob(jobSchedulePlan *common.JobSchedulePlan)
 	scheduler.JobExecutingTable[jobExecuteInfo.Pipeline.PipelineId] = jobExecuteInfo
 	GLogMgr.WriteLog(jobExecuteInfo.Pipeline.Name + "加入任务执行表")
 	startTime = time.Now() //流水线开始执行时间
-	pipelineRecord = &model.PipelineRecord{Status: 1}
+	id, _ = uuid.NewV4()
+	uid = string([]rune(id.String())[:10])
+	pipelineRecord = &model.PipelineRecord{Status: 1, Id: uid}
 	//执行流水线中绑定的任务
 	for _, pipelineJob = range jobExecuteInfo.Pipeline.Steps {
 		if pipelineJob.Timeout == 0 {
@@ -231,6 +206,7 @@ func (scheduler *Scheduler) TryStartJob(jobSchedulePlan *common.JobSchedulePlan)
 		jobExecuteInfo.CancelFunc = cancelFunc
 		//4. 执行任务
 		jobRecord = GExecutor.ExecutingJob(jobExecuteInfo, pipelineJob)
+		jobRecord.PipelineRecordId = pipelineRecord.Id
 		jobRecords = append(jobRecords, jobRecord)
 		if jobRecord.Status == 0 { //任务执行失败，则流水线执行失败
 			pipelineRecord.Status = 0
@@ -290,7 +266,7 @@ func (scheduler *Scheduler) OperateJobEvent(jobEvent *common.JobEvent) (err erro
 	//如果是添加任务事件，则向planTable中增加一个事件
 	switch jobEvent.Event {
 	case constants.SAVE_JOB_EVENT:
-		if jobEvent.Type == 0 { //如果是定时任务
+		if jobEvent.Type == 0 || jobEvent.Type == 1 { //如果是定时任务
 			if jobSchedulePlan, err = common.BuildJobSchedulePlan(jobEvent.Pipeline); err != nil {
 				GLogMgr.WriteLog("流水线加入计划表出错：" + jobEvent.Pipeline.Name)
 				return

@@ -3,24 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="增加创建任务接口">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/Comstants.go" beforeDir="false" afterPath="$PROJECT_DIR$/constants/Comstants.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/Protocol.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/Protocol.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/manager/JobManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/JobManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/manager/MasterManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MasterManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/manager/MgMgrProduce.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MgMgrProduce.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/manager/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/RedisManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/manager/WorkMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/WorkMgr.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/Pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/DBManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/DBManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/ExecuteMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/ExecuteMgr.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/JobLock.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/JobLock.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/JobMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/JobMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants/Comstants.go" beforeDir="false" afterPath="$PROJECT_DIR$/constants/Comstants.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/MqMgrProduce.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MqMgrProduce.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/server/JobService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/JobService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/server/PipeLineService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/PipeLineService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/fileReader.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/fileReader.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worker/LogMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/LogMgr.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worker/MqMgrCustomer.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/MqMgrCustomer.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/RedisManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/Register.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/Register.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worker/Scheduler.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/Scheduler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/main/Worker.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/main/Worker.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -90,7 +81,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build crontab/worker/main">
+  <component name="RunManager" selected="Go Build.go build crontab/master/main">
     <configuration name="go build crontab/master/main" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="crontab" />
       <working_directory value="$PROJECT_DIR$/master/main" />
@@ -149,14 +140,14 @@
           <option name="timeStamp" value="106" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/worker/Scheduler.go</url>
-          <line>243</line>
-          <option name="timeStamp" value="115" />
+          <url>file://C:/GoPath/src/github.com/jinzhu/gorm/callback_create.go</url>
+          <line>25</line>
+          <option name="timeStamp" value="113" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/worker/Scheduler.go</url>
-          <line>59</line>
-          <option name="timeStamp" value="116" />
+          <url>file://C:/GoPath/src/github.com/jinzhu/gorm/main.go</url>
+          <line>270</line>
+          <option name="timeStamp" value="123" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
