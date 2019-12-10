@@ -3,6 +3,7 @@ package model
 import (
 	"crontab/master/manager"
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
@@ -85,4 +86,57 @@ func (file *File) SaveRedis() (err error) {
 	_, err = manager.GRedis.Conn.Do("HMSET", "file", file.FileId, file.FileId)
 
 	return
+}
+
+func (file *File) GetSingleRedis() (f *File, err error) {
+	var (
+		data  interface{}
+		datas []interface{}
+		fstr  []byte
+	)
+	f = &File{}
+	if data, err = manager.GRedis.Conn.Do("HMGET", "file", file.FileId); err != nil {
+		return nil, err
+	}
+	datas = data.([]interface{})
+	if datas[0] != nil {
+		fstr = datas[0].([]byte)
+		if fstr != nil {
+			f.FileId = string(fstr)
+		} else {
+			return nil, errors.New("redis没有对应job")
+		}
+	} else {
+		return nil, errors.New("redis没有对应job")
+	}
+	return
+}
+
+func (file *File) GetSingleDB() (f *File, err error) {
+	f = &File{}
+	if err = manager.GDB.DB.Where("file_id = ?", f.FileId).First(&f).Error; err != nil {
+		return nil, err
+	}
+
+	return f, err
+}
+
+func (file *File) IsExist() bool {
+	var (
+		fileR *File
+		err   error
+	)
+	if fileR, err = file.GetSingleRedis(); err != nil {
+		return false
+	}
+
+	if fileR == nil {
+		if fileR, err = file.GetSingleDB(); err != nil {
+			return false
+		}
+		if fileR == nil {
+			return false
+		}
+	}
+	return true
 }

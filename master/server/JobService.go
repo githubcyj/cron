@@ -3,6 +3,7 @@ package server
 import (
 	"crontab/common"
 	"crontab/model"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
@@ -17,15 +18,25 @@ import (
 //这里接收到的参数post:job:{"name":"job","command":"echo hello","cronExpr":"* * * * *"}
 func HandlerJobSave(c *gin.Context) {
 	var (
-		err   error
-		job   model.Job
-		old   *model.Job
-		bytes common.HttpReply
+		err     error
+		job     model.Job
+		old     *model.Job
+		bytes   common.HttpReply
+		file    *model.File
+		isExist bool
 		//postJob string
 	)
 	//解析post表单
 	if err := c.ShouldBindBodyWith(&job, binding.JSON); err != nil {
 		goto ERR
+	}
+	if job.IsFile == 1 {
+		file = &model.File{FileId: job.FileId}
+		//需要判断文件是否存在
+		if isExist = file.IsExist(); !isExist {
+			err = errors.New("文件不存在，请重新上传")
+			goto ERR
+		}
 	}
 	//保存job进入数据库
 	if err = job.SaveDB(); err != nil {

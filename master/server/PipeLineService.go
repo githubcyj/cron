@@ -338,7 +338,7 @@ func HandlerSyncEtcd(c *gin.Context) {
 
 	//延时任务，则加入mq中等待延时时间到达执行
 	if pipelineR.Type == constants.DELAY_JOB_TYPE {
-		if err = manager.GMqMgrProduce.PushMq(pipelineR); err != nil {
+		if err = pipelineR.PushMq(); err != nil {
 			goto ERR
 		}
 	}

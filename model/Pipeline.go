@@ -7,7 +7,9 @@ import (
 	"encoding/json"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
+	"github.com/streadway/amqp"
 	"go.etcd.io/etcd/clientv3"
+	"strconv"
 	"time"
 )
 
@@ -182,6 +184,42 @@ func (p *Pipeline) KillEtcd() (err error) {
 
 	if putResp.PrevKv != nil {
 		//反序列化json
+		return
+	}
+	return
+}
+
+//将任务推送到消息队列
+func (pipeline *Pipeline) PushMq() (err error) {
+	var (
+		pipelineStr []byte
+		now         time.Time
+		diff        time.Duration
+	)
+	//序列化
+	if pipelineStr, err = json.Marshal(pipeline); err != nil {
+		return
+	}
+	//设置过期时间
+	loc, _ := time.LoadLocation("Local")
+	the_time, _ := time.ParseInLocation("2006-01-02 15:04:05", pipeline.TimerExecuter, loc)
+
+	//获取当前时间
+	now = time.Now()
+	//与当前时间的差
+	diff = now.Sub(the_time)
+
+	if err = manager.GMqMgrProduce.Ch.Publish(
+		constants.DELAY_EXCHANGE,
+		constants.DELAY_KEY,
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        pipelineStr,
+			Expiration:  strconv.FormatFloat(diff.Seconds(), 'E', -1, 64), //设置过期时间
+		},
+	); err != nil {
 		return
 	}
 	return

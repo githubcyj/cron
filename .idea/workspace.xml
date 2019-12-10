@@ -2,16 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="增加创建任务接口">
+      <change afterPath="$PROJECT_DIR$/file/2df3c230-0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file/49a2d802-f" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file/8379532b-2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file/85fb9ef7-8" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file/923f8407-e" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file/9ce354e8-7" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file/d742fbfd-0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file/fafab1bd-1" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/Protocol.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/Protocol.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants/Comstants.go" beforeDir="false" afterPath="$PROJECT_DIR$/constants/Comstants.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/manager/MqMgrProduce.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MqMgrProduce.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/server/JobService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/JobService.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/server/PipeLineService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/PipeLineService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/fileReader.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/fileReader.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/LogMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/LogMgr.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/MqMgrCustomer.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/MqMgrCustomer.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/Scheduler.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/Scheduler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/File.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/File.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/job.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/job.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,6 +44,7 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="GO_FMT" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -81,7 +87,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build crontab/master/main">
+  <component name="RunManager" selected="Go Build.go build crontab/worker/main">
     <configuration name="go build crontab/master/main" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="crontab" />
       <working_directory value="$PROJECT_DIR$/master/main" />
@@ -128,6 +134,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="增加创建任务接口" />
     <option name="LAST_COMMIT_MESSAGE" value="增加创建任务接口" />
   </component>
