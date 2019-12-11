@@ -2,8 +2,8 @@ package common
 
 import (
 	"context"
-	"crontab/constants"
-	"crontab/model"
+	"github.com/crontab/constants"
+	"github.com/crontab/model"
 	"github.com/gorhill/cronexpr"
 	"strings"
 	"time"

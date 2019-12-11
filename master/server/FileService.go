@@ -1,10 +1,10 @@
 package server
 
 import (
-	"crontab/common"
-	"crontab/constants"
-	"crontab/master/manager"
-	"crontab/model"
+	"github.com/crontab/common"
+	"github.com/crontab/constants"
+	"github.com/crontab/master/manager"
+	"github.com/crontab/model"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
 	"net/http"

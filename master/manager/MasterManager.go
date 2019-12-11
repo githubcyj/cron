@@ -2,8 +2,8 @@ package manager
 
 import (
 	"context"
-	"crontab/constants"
-	"crontab/master"
+	"github.com/crontab/constants"
+	"github.com/crontab/master"
 	"go.etcd.io/etcd/clientv3"
 	"time"
 )

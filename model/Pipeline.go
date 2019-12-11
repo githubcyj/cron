@@ -2,9 +2,9 @@ package model
 
 import (
 	"context"
-	"crontab/constants"
-	manager "crontab/master/manager"
 	"encoding/json"
+	"github.com/crontab/constants"
+	manager "github.com/crontab/master/manager"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
@@ -56,7 +56,7 @@ func (pipeline *Pipeline) BeforeCreate(scope *gorm.Scope) error {
 		err error
 		uid string
 	)
-	id, _ = uuid.NewV4()
+	id = uuid.NewV4()
 	uid = string([]rune(id.String())[:10])
 	if err = scope.SetColumn("pipelineId", uid); err != nil {
 		return err

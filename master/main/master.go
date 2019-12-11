@@ -1,12 +1,12 @@
 package main
 
 import (
-	"crontab/master"
-	"crontab/master/manager"
-	"crontab/master/middleware"
-	"crontab/master/router"
-	"crontab/master/server"
 	"fmt"
+	"github.com/crontab/master"
+	"github.com/crontab/master/manager"
+	"github.com/crontab/master/middleware"
+	"github.com/crontab/master/router"
+	"github.com/crontab/master/server"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"

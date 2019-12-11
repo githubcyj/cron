@@ -1,10 +1,10 @@
 package model
 
 import (
-	"crontab/master/manager"
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/crontab/master/manager"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 	"time"
@@ -39,7 +39,7 @@ func (file *File) BeforeCreate(scope *gorm.Scope) error {
 		err error
 		uid string
 	)
-	id, _ = uuid.NewV4()
+	id = uuid.NewV4()
 	uid = string([]rune(id.String())[:10])
 	if err = scope.SetColumn("file_id", uid); err != nil {
 		return err

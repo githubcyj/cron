@@ -1,8 +1,8 @@
 package entity
 
 import (
-	"crontab/master/manager"
-	"crontab/model"
+	"github.com/crontab/master/manager"
+	"github.com/crontab/model"
 )
 
 /**

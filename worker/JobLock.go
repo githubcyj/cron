@@ -2,8 +2,8 @@ package worker
 
 import (
 	"context"
-	"crontab/common"
-	"crontab/constants"
+	"github.com/crontab/common"
+	"github.com/crontab/constants"
 	"go.etcd.io/etcd/clientv3"
 )
 

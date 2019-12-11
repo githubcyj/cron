@@ -2,7 +2,7 @@ package worker
 
 import (
 	"context"
-	"crontab/constants"
+	"github.com/crontab/constants"
 	"go.etcd.io/etcd/clientv3"
 	"net"
 	"time"

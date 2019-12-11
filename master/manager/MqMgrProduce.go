@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"crontab/constants"
+	"github.com/crontab/constants"
 	"github.com/streadway/amqp"
 )
 

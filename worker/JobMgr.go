@@ -2,10 +2,10 @@ package worker
 
 import (
 	"context"
-	"crontab/common"
-	"crontab/constants"
-	"crontab/model"
 	"encoding/json"
+	"github.com/crontab/common"
+	"github.com/crontab/constants"
+	"github.com/crontab/model"
 	"go.etcd.io/etcd/clientv3"
 	"go.etcd.io/etcd/mvcc/mvccpb"
 	"strconv"

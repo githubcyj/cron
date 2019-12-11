@@ -1,9 +1,9 @@
 package model
 
 import (
-	"crontab/master/manager"
 	"encoding/json"
 	"errors"
+	"github.com/crontab/master/manager"
 	"github.com/jinzhu/gorm"
 	"time"
 )

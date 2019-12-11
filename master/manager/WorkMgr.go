@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"crontab/master"
+	"github.com/crontab/master"
 	"go.etcd.io/etcd/clientv3"
 	"time"
 )

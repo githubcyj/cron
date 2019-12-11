@@ -1,13 +1,13 @@
 package server
 
 import (
-	"crontab/common"
-	"crontab/constants"
-	"crontab/master/manager"
-	"crontab/model"
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/crontab/common"
+	"github.com/crontab/constants"
+	"github.com/crontab/master/manager"
+	"github.com/crontab/model"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"

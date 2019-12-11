@@ -2,9 +2,9 @@ package worker
 
 import (
 	"context"
-	"crontab/common"
-	"crontab/constants"
-	"crontab/model"
+	"github.com/crontab/common"
+	"github.com/crontab/constants"
+	"github.com/crontab/model"
 	uuid "github.com/satori/go.uuid"
 	"strconv"
 	"time"

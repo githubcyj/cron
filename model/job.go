@@ -1,9 +1,9 @@
 package model
 
 import (
-	"crontab/master/manager"
 	"encoding/json"
 	"errors"
+	"github.com/crontab/master/manager"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 	"time"
@@ -45,7 +45,7 @@ func (job *Job) BeforeCreate(scope *gorm.Scope) error {
 		err error
 		uid string
 	)
-	id, _ = uuid.NewV4()
+	id = uuid.NewV4()
 	uid = string([]rune(id.String())[:10])
 	if err = scope.SetColumn("job_id", uid); err != nil {
 		return err

@@ -1,10 +1,10 @@
 package server
 
 import (
-	"crontab/common"
-	"crontab/entity"
-	"crontab/model"
 	"errors"
+	"github.com/crontab/common"
+	"github.com/crontab/entity"
+	"github.com/crontab/model"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"

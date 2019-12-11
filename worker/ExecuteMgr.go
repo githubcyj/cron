@@ -1,9 +1,9 @@
 package worker
 
 import (
-	"crontab/common"
-	"crontab/constants"
-	"crontab/model"
+	"github.com/crontab/common"
+	"github.com/crontab/constants"
+	"github.com/crontab/model"
 	"math/rand"
 	"os/exec"
 	"time"

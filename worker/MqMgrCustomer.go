@@ -1,10 +1,10 @@
 package worker
 
 import (
-	"crontab/common"
-	"crontab/constants"
-	"crontab/model"
 	"encoding/json"
+	"github.com/crontab/common"
+	"github.com/crontab/constants"
+	"github.com/crontab/model"
 	"github.com/streadway/amqp"
 )
 

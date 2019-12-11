@@ -1,7 +1,7 @@
 package router
 
 import (
-	"crontab/master/server"
+	"github.com/crontab/master/server"
 	"github.com/gin-gonic/gin"
 )
 

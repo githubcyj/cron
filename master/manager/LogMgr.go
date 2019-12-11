@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"crontab/master"
+	"github.com/crontab/master"
 	"github.com/sirupsen/logrus"
 	"os"
 )

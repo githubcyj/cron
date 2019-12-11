@@ -1,8 +1,8 @@
 package manager
 
 import (
-	"crontab/master"
 	"fmt"
+	"github.com/crontab/master"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
