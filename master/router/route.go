@@ -29,5 +29,7 @@ func Route(router *gin.Engine) {
 
 		api.GET("/pipeline/run", server.HandlerSyncEtcd)      //将流水线同步到etcd中开始调度
 		api.GET("/pipeline/kill", server.HandlerPipelineKill) //将流水线同步到etcd中开始调度
+
+		api.GET("/node/kill", server.HandlerPipelineKill) //将流水线同步到etcd中开始调度
 	}
 }

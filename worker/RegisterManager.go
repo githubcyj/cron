@@ -3,6 +3,7 @@ package worker
 import (
 	"context"
 	"github.com/crontab/constants"
+	"github.com/crontab/model"
 	"go.etcd.io/etcd/clientv3"
 	"net"
 	"time"
@@ -43,6 +44,37 @@ func getLocalIp() (ipv4 string, err error) {
 }
 
 func (register *Register) RegisterWorker() (err error) {
+	var (
+		node *model.Node
+		ip   string
+	)
+	//获取本机ip
+	if ip, err = getLocalIp(); err != nil {
+		return
+	}
+	node = &model.Node{
+		Host:   ip,
+		Status: constants.NODE_ONLINE,
+	}
+	//保存节点进入etcd
+	if err = register.RegisterWorkerToEtcd(); err != nil {
+		goto ERR
+	}
+
+	//保存节点进入数据库
+	if err = node.SaveDB(); err != nil {
+		goto ERR
+	}
+	if err = node.SaveRedis(); err != nil {
+		goto ERR
+	}
+	return
+ERR:
+	GLogMgr.WriteLog(err.Error())
+	return
+}
+
+func (register *Register) RegisterWorkerToEtcd() (err error) {
 	var (
 		ip                 string
 		registerKey        string
@@ -113,6 +145,7 @@ func InitRegister() (err error) {
 		kv     clientv3.KV
 		lease  clientv3.Lease
 	)
+
 	config = clientv3.Config{
 		Endpoints:   GConfig.EtcdIP,
 		DialTimeout: time.Duration(GConfig.EtcdTimeout) * time.Millisecond,
@@ -132,5 +165,29 @@ func InitRegister() (err error) {
 	}
 	//注册服务
 	go GRegister.RegisterWorker()
+	return
+}
+
+//服务注销
+func (register *Register) Offline() (err error) {
+	var (
+		ip          string
+		registerKey string
+		node        *model.Node
+	)
+
+	//获取本机ip
+	if ip, err = getLocalIp(); err != nil {
+		return
+	}
+
+	//注册的地址
+	registerKey = constants.JOB_WORKER_DIR + ip
+	//从etcd中删除
+	_, err = register.Kv.Delete(context.TODO(), registerKey)
+	//修改数据库及缓存状态
+	node = &model.Node{Host: ip}
+	node.Offline()
+
 	return
 }

@@ -1,8 +1,8 @@
 package worker
 
 import (
-	"crontab/common"
-	"crontab/model"
+	"github.com/crontab/common"
+	"github.com/crontab/model"
 	"log"
 	"time"
 )

@@ -37,4 +37,9 @@ const (
 
 	//延时任务
 	DELAY_JOB_TYPE = 1
+
+	//节点在线
+	NODE_ONLINE = 1
+	//节点不在线
+	NODE_OFFLINE = 0
 )

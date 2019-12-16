@@ -1,8 +1,8 @@
 package main
 
 import (
-	"crontab/worker"
 	"fmt"
+	"github.com/crontab/worker"
 	"runtime"
 	"time"
 )
@@ -54,18 +54,28 @@ func main() {
 		goto ERR
 	}
 
+	//启动服务注册
+	if err = worker.InitRegister(); err != nil {
+		goto ERR
+	}
+
 	//启动延时任务监听
 	//if err = worker.InitMq(); err != nil {
 	//	goto ERR
 	//}
-
-	for {
-		time.Sleep(1 * time.Second)
-	}
-
 	//启动服务注册
 	if err = worker.InitRegister(); err != nil {
 		goto ERR
+	}
+	defer func() {
+		if err1 := recover(); err1 != nil {
+			//让节点下线
+			worker.GRegister.Offline()
+		}
+	}()
+
+	for {
+		time.Sleep(1 * time.Second)
 	}
 
 ERR:
