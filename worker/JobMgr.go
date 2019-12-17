@@ -3,11 +3,13 @@ package worker
 import (
 	"context"
 	"encoding/json"
+	"github.com/coreos/etcd/clientv3"
+	"github.com/coreos/etcd/mvcc/mvccpb"
 	"github.com/crontab/common"
 	"github.com/crontab/constants"
 	"github.com/crontab/model"
-	"go.etcd.io/etcd/clientv3"
-	"go.etcd.io/etcd/mvcc/mvccpb"
+	"github.com/crontab/util"
+	"github.com/wxnacy/wgo/arrays"
 	"strconv"
 	"time"
 )
@@ -81,10 +83,12 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 		keyPair         *mvccpb.KeyValue
 		jobEvent        *common.JobEvent
 		pipeline        *model.Pipeline
+		local           string
+		index           int
 	)
 
 	jobKey = constants.SAVE_JOB_DIR
-
+	local, _ = util.GetLocalIp() //本机ip
 	//创建一个wacher
 	watcher = jobMgr.watcher
 
@@ -99,6 +103,14 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 		//反序列化
 		if err = json.Unmarshal(keyPair.Value, pipeline); err != nil {
 			GLogMgr.WriteLog("解析etcd中的任务出错：" + err.Error())
+		}
+		//判断流水线是否绑定节点
+		if len(pipeline.Nodes) != 0 { //流水线绑定了节点
+			//判断流水线中的节点是否有本机节点
+			if index = arrays.Contains(pipeline.Nodes, local); index == -1 { //流水线不在本机节点，则在本机不执行
+				GLogMgr.WriteLog("流水线不在此节点执行")
+				return
+			}
 		}
 		GLogMgr.WriteLog("从etcd读取到的任务：" + pipeline.Name)
 		//创建jobEvent
@@ -127,6 +139,14 @@ func (jobMgr *JobMgr) WatchJobs() (err error) {
 					if err = json.Unmarshal(event.Kv.Value, pipeline); err != nil {
 						GLogMgr.WriteLog("解析流水线出错：" + err.Error())
 						return
+					}
+					//判断流水线是否绑定节点
+					if len(pipeline.Nodes) != 0 { //流水线绑定了节点
+						//判断流水线中的节点是否有本机节点
+						if index = arrays.Contains(pipeline.Nodes, local); index == -1 { //流水线不在本机节点，则在本机不执行
+							GLogMgr.WriteLog("流水线不在此节点执行")
+							return
+						}
 					}
 					//判断任务类型
 					//构建任务事件

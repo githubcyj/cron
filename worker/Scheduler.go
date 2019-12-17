@@ -204,7 +204,7 @@ func (scheduler *Scheduler) TryStartJob(jobSchedulePlan *common.JobSchedulePlan)
 	scheduler.JobExecutingTable[jobExecuteInfo.Pipeline.PipelineId] = jobExecuteInfo
 	GLogMgr.WriteLog(jobExecuteInfo.Pipeline.Name + "加入任务执行表")
 	startTime = time.Now() //流水线开始执行时间
-	id, _ = uuid.NewV4()
+	id = uuid.NewV4()
 	uid = string([]rune(id.String())[:10])
 	pipelineRecord = &model.PipelineRecord{Status: 1, Id: uid}
 	//执行流水线中绑定的任务

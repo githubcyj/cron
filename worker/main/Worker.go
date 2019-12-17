@@ -63,10 +63,6 @@ func main() {
 	//if err = worker.InitMq(); err != nil {
 	//	goto ERR
 	//}
-	//启动服务注册
-	if err = worker.InitRegister(); err != nil {
-		goto ERR
-	}
 	defer func() {
 		if err1 := recover(); err1 != nil {
 			//让节点下线

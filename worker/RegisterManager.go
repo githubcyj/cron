@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/crontab/constants"
 	"github.com/crontab/model"
 	"go.etcd.io/etcd/clientv3"
@@ -45,8 +46,9 @@ func getLocalIp() (ipv4 string, err error) {
 
 func (register *Register) RegisterWorker() (err error) {
 	var (
-		node *model.Node
-		ip   string
+		node    *model.Node
+		ip      string
+		nodeStr []byte
 	)
 	//获取本机ip
 	if ip, err = getLocalIp(); err != nil {
@@ -62,11 +64,17 @@ func (register *Register) RegisterWorker() (err error) {
 	}
 
 	//保存节点进入数据库
-	if err = node.SaveDB(); err != nil {
-		goto ERR
+	if err = GDB.DB.Create(node).Error; err != nil {
+		GLogMgr.WriteLog("注册节点出错：" + err.Error())
 	}
-	if err = node.SaveRedis(); err != nil {
-		goto ERR
+
+	if nodeStr, err = json.Marshal(node); err != nil {
+		return
+	}
+
+	if _, err = GRedis.Conn.Do("HMSET", "node", node.Host, nodeStr); err != nil {
+		GLogMgr.WriteLog("节点保存进入数据库失败：" + err.Error())
+		return
 	}
 	return
 ERR:
