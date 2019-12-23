@@ -1,13 +1,16 @@
 package router
 
 import (
+	_ "github.com/crontab/master/docs" //这里导入生成的docs
 	"github.com/crontab/master/server"
 	"github.com/gin-gonic/gin"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 //配置路由
 func Route(router *gin.Engine) {
-
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	api := router.Group("/cron")
 	{
 		//api.POST("/record/delete", server.HandlerJobListDetele) //获取一个流水线下所有逻辑删除的job
@@ -30,6 +33,9 @@ func Route(router *gin.Engine) {
 		api.GET("/pipeline/run", server.HandlerSyncEtcd)      //将流水线同步到etcd中开始调度
 		api.GET("/pipeline/kill", server.HandlerPipelineKill) //将流水线同步到etcd中开始调度
 
-		api.GET("/node/kill", server.HandlerPipelineKill) //将流水线同步到etcd中开始调度
+		api.GET("/node/list", server.HandlerNodeList)               //获得所有的node节点，包括在线与不在线
+		api.POST("/node/pipeline/bind", server.HandlerNodePipeline) //流水线与node节点绑定
+
+		api.POST("/command/ban/add", server.HandlerCommandSave) //增加禁止执行的任务命令
 	}
 }

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/crontab/master/manager"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 	"time"
@@ -38,7 +39,7 @@ func (pipelineNode *PipelineNode) BeforeCreate(scope *gorm.Scope) error {
 	)
 	id = uuid.NewV4()
 	uid = string([]rune(id.String())[:10])
-	if err = scope.SetColumn("node_id", uid); err != nil {
+	if err = scope.SetColumn("pipeline_node_id", uid); err != nil {
 		return err
 	}
 
@@ -51,4 +52,14 @@ func (pipelineNode *PipelineNode) BeforeCreate(scope *gorm.Scope) error {
 	}
 
 	return nil
+}
+
+func (pipelineNode *PipelineNode) SaveDB() (err error) {
+	err = manager.GDB.DB.Create(pipelineNode).Error
+	return
+}
+
+func (pipelineNode *PipelineNode) SaveRedis() (err error) {
+	_, err = manager.GRedis.Conn.Do("HMSET", "node-pipeline", pipelineNode.NodeId, pipelineNode.PipelineId)
+	return
 }

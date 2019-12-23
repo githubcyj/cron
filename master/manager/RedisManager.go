@@ -2,7 +2,7 @@ package manager
 
 import (
 	"fmt"
-	"github.com/crontab/master"
+	"github.com/crontab/master/config"
 	"github.com/garyburd/redigo/redis"
 	"time"
 )
@@ -30,15 +30,15 @@ func InitRedis() {
 			var (
 				url string
 			)
-			url = fmt.Sprintf("%s:%d", master.GConfig.RedisHost, master.GConfig.RedisPort)
-			c, err := redis.Dial("tcp", url, redis.DialPassword((master.GConfig.RedisPassword)))
+			url = fmt.Sprintf("%s:%d", config.GConfig.RedisHost, config.GConfig.RedisPort)
+			c, err := redis.Dial("tcp", url, redis.DialPassword((config.GConfig.RedisPassword)))
 			if err != nil {
 				return nil, err
 			}
 			return c, nil
 		},
-		MaxIdle:     master.GConfig.RedisMaxIdle,
-		MaxActive:   master.GConfig.RedisMaxActive,
+		MaxIdle:     config.GConfig.RedisMaxIdle,
+		MaxActive:   config.GConfig.RedisMaxActive,
 		IdleTimeout: 240 * time.Second,
 		Wait:        true,
 	}

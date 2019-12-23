@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"github.com/crontab/master"
+	config2 "github.com/crontab/master/config"
 	"go.etcd.io/etcd/clientv3"
 	"time"
 )
@@ -49,8 +49,8 @@ func InitWorkMgr() (err error) {
 		kv     clientv3.KV
 	)
 	config = clientv3.Config{
-		Endpoints:   master.GConfig.EtcdIP,
-		DialTimeout: time.Duration(master.GConfig.EtcdTimeout) * time.Millisecond,
+		Endpoints:   config2.GConfig.EtcdIP,
+		DialTimeout: time.Duration(config2.GConfig.EtcdTimeout) * time.Millisecond,
 	}
 
 	if client, err = clientv3.New(config); err != nil {

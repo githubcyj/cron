@@ -24,10 +24,11 @@ func CorsMiddleWare() gin.HandlerFunc {
 		}
 
 		if isAccess {
-			c.Header("Access-Control-Allow-Origin", "http://localhost:2233")
+			c.Header("Access-Control-Allow-Origin", "*")
 			c.Header("Access-Control-Allow-Headers", "emaccesstk,Origin, X-Requested-With, Content-Type, Accept")
 			c.Header("Access-Control-Allow-Methods", "GET, OPTIONS, POST, PUT, DELETE")
 			c.Header("Access-Control-Allow-Credentials", "true")
+			c.Header("Access-Control-Allow-*", "true")
 			c.Set("content-type", "application/json")
 		}
 

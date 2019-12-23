@@ -1,4 +1,4 @@
-package master
+package config
 
 import (
 	"encoding/json"
@@ -45,7 +45,7 @@ func InitConfig() (err error) {
 
 	//读取master.json,可让用户自定义
 	//如 master -config ./master.json 默认master.json
-	flag.StringVar(&confFile, "config", "./master.json", "指定配置文件")
+	flag.StringVar(&confFile, "config", "./config/master.json", "指定配置文件")
 	//解析命令行参数
 	flag.Parse()
 

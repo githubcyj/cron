@@ -26,6 +26,7 @@ type Job struct {
 	ExecutionCount int    `json:"executionCount"`                //执行次数
 	IsFile         int    `json:"isFile"`                        //是否是文件任务
 	FileId         string `json:"fileId"`                        //文件id
+	Status         int    `json:"status"`                        //任务状态,-1：任务禁止执行
 	Base
 }
 

@@ -2,11 +2,15 @@ package server
 
 import (
 	"errors"
+	"fmt"
 	"github.com/crontab/common"
+	"github.com/crontab/constants"
 	"github.com/crontab/model"
+	"github.com/crontab/util"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
+	"strings"
 )
 
 /**
@@ -18,12 +22,17 @@ import (
 //这里接收到的参数post:job:{"name":"job","command":"echo hello","cronExpr":"* * * * *"}
 func HandlerJobSave(c *gin.Context) {
 	var (
-		err     error
-		job     model.Job
-		old     *model.Job
-		bytes   common.HttpReply
-		file    *model.File
-		isExist bool
+		err         error
+		job         model.Job
+		old         *model.Job
+		bytes       common.HttpReply
+		file        *model.File
+		isExist     bool
+		commandList []*model.CommandBan
+		command     *model.CommandBan
+		file        *model.File
+		fileR       *model.File
+		banExist    bool
 		//postJob string
 	)
 	//解析post表单
@@ -36,6 +45,33 @@ func HandlerJobSave(c *gin.Context) {
 		if isExist = file.IsExist(); !isExist {
 			err = errors.New("文件不存在，请重新上传")
 			goto ERR
+		}
+	}
+	command = &model.CommandBan{}
+	//获取所有禁止任务
+	if commandList, err = command.GetCommand(); err != nil {
+		goto ERR
+	}
+	//判断任务中是否有禁止命令
+	if job.IsFile == 1 { //任务是文件任务，则需要判断文件中是否包含禁止命令
+		//获取文件名
+		file = &model.File{FileId: job.FileId}
+		if fileR, err = file.GetSingleRedis(); err != nil {
+			goto ERR
+		}
+		for _, command = range commandList {
+			if util.IsFindStrInFile(command.Command, constants.FILE_PATH+fileR.Name) {
+				fmt.Println("文件中包含禁止命令，此任务将不会执行")
+				job.Status = -1
+			}
+
+		}
+	} else {
+		for _, command = range commandList {
+			if strings.Contains(job.Command, command.Command) {
+				fmt.Println("文件中包含禁止命令，此任务将不会执行")
+				job.Status = -1
+			}
 		}
 	}
 	//保存job进入数据库

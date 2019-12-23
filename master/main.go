@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/crontab/master"
+	"github.com/crontab/master/config"
+	_ "github.com/crontab/master/docs" //这里导入生成的docs
 	"github.com/crontab/master/manager"
 	"github.com/crontab/master/middleware"
 	"github.com/crontab/master/router"
@@ -18,6 +19,9 @@ func InitEnv() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
+// @title 分布式任务管理系统
+// @version 1.0
+// @host 127.0.0.1:8060
 func main() {
 	var (
 		err error
@@ -30,9 +34,8 @@ func main() {
 
 	store, _ := redis.NewStore(10, "tcp", "localhost:6381", "WEAVERemobile7*()", []byte("secret"))
 	app.Use(sessions.Sessions("mysession", store))
-
 	//加载配置
-	if err = master.InitConfig(); err != nil {
+	if err = config.InitConfig(); err != nil {
 		fmt.Println(err)
 	}
 
@@ -64,9 +67,9 @@ func main() {
 	}
 
 	//启动消息队列
-	if err = manager.InitMq(); err != nil {
-		fmt.Println(err)
-	}
+	//if err = manager.InitMq(); err != nil {
+	//	fmt.Println(err)
+	//}
 
 	//将任务放入redis中
 	//go manager.InitJobsToRedis()

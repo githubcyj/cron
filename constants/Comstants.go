@@ -1,8 +1,6 @@
 package constants
 
 const (
-	FILE_PATH = "../../file/"
-
 	SAVE_JOB_DIR = "/cron/job/save/"
 
 	KILL_JOB_DIR = "/cron/job/kill/"
@@ -42,4 +40,7 @@ const (
 	NODE_ONLINE = 1
 	//节点不在线
 	NODE_OFFLINE = 0
+
+	//文件路径
+	FILE_PATH = "F:\\code\\GOPATH\\src\\github.com\\crontab\\file\\"
 )

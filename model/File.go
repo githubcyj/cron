@@ -83,7 +83,7 @@ func (f *File) SaveDb() (fileId string, err error) {
 }
 
 func (file *File) SaveRedis() (err error) {
-	_, err = manager.GRedis.Conn.Do("HMSET", "file", file.FileId, file.FileId)
+	_, err = manager.GRedis.Conn.Do("HMSET", "file", file.FileId, file.Name)
 
 	return
 }
@@ -104,10 +104,10 @@ func (file *File) GetSingleRedis() (f *File, err error) {
 		if fstr != nil {
 			f.FileId = string(fstr)
 		} else {
-			return nil, errors.New("redis没有对应job")
+			return nil, errors.New("redis没有对应文件")
 		}
 	} else {
-		return nil, errors.New("redis没有对应job")
+		return nil, errors.New("redis没有对应文件")
 	}
 	return
 }

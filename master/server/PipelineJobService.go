@@ -16,7 +16,11 @@ import (
   @todo
 */
 
-//获取一个流水线下所有未删除的job
+// @Summary 获取一个流水线下所有未删除的job
+// @Produce json
+// @Param studName query string true "学生姓名"
+// @Success 200 {object} HttpReply
+// @Router /record/list [post]
 func HandlerJobList(c *gin.Context) {
 	var (
 		jobArr         []*model.Job

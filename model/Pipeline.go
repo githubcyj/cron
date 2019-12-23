@@ -21,19 +21,20 @@ import (
 
 //流水线
 type Pipeline struct {
-	Id             int    `json:"id"`
-	PipelineId     string `json:"pipelineId"`                    //流水线id
-	Status         int    `json:"status"`                        //流水线状态
-	Name           string `json:"name"`                          //名称
-	Type           int    `json:"type"`                          //流水线类型 0：定时执行，1：延时执行
-	CronExpr       string `json:"cronExpr"`                      //定时任务：定时任务执行时间
-	IsDel          int    `json:"isDel" gorm:"default:'0'`       //0：流水线未删除，1：流水线已删除
-	UpdateCount    int    `json:"updateCount" gorm:"default:'0'` //更新计数
-	RunCount       int    `json:"runCount"`                      //流水线执行次数，即一共可以执行多少次 -1表示不限次数
-	TimerExecuter  string `json:"timerExecuter"`                 //延时任务执行时间
-	ExecutionCount int    `json:"executionCount"`                //执行次数
-	Finished       string `json:"finished"`                      //成功时执行的任务id
-	Failed         string `json:"failed"`                        //失败时执行的任务id
+	Id             int      `json:"id"`
+	PipelineId     string   `json:"pipelineId"`                    //流水线id
+	Status         int      `json:"status"`                        //流水线状态
+	Name           string   `json:"name"`                          //名称
+	Type           int      `json:"type"`                          //流水线类型 0：定时执行，1：延时执行
+	CronExpr       string   `json:"cronExpr"`                      //定时任务：定时任务执行时间
+	IsDel          int      `json:"isDel" gorm:"default:'0'`       //0：流水线未删除，1：流水线已删除
+	UpdateCount    int      `json:"updateCount" gorm:"default:'0'` //更新计数
+	RunCount       int      `json:"runCount"`                      //流水线执行次数，即一共可以执行多少次 -1表示不限次数
+	TimerExecuter  string   `json:"timerExecuter"`                 //延时任务执行时间
+	ExecutionCount int      `json:"executionCount"`                //执行次数
+	Finished       string   `json:"finished"`                      //成功时执行的任务id
+	Failed         string   `json:"failed"`                        //失败时执行的任务id
+	Nodes          []string `json:"nodes"`                         //流水线绑定的节点
 	FinishedJob    *Job
 	FailedJob      *Job
 	Steps          []*PipelineJob

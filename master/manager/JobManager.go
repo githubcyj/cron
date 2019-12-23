@@ -3,7 +3,7 @@ package manager
 import (
 	"context"
 	"github.com/crontab/constants"
-	"github.com/crontab/master"
+	config2 "github.com/crontab/master/config"
 	"go.etcd.io/etcd/clientv3"
 	"time"
 )
@@ -30,8 +30,8 @@ func InitJobManager() (err error) {
 	)
 
 	config = clientv3.Config{
-		Endpoints:   master.GConfig.EtcdIP,
-		DialTimeout: time.Duration(master.GConfig.EtcdTimeout) * time.Millisecond,
+		Endpoints:   config2.GConfig.EtcdIP,
+		DialTimeout: time.Duration(config2.GConfig.EtcdTimeout) * time.Millisecond,
 	}
 
 	if client, err = clientv3.New(config); err != nil {

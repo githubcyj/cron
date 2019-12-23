@@ -57,32 +57,6 @@ func (node *Node) BeforeCreate(scope *gorm.Scope) error {
 	return nil
 }
 
-func (node *Node) SaveDB() (err error) {
-	if err = manager.GDB.DB.Create(node).Error; err != nil {
-		manager.GLogMgr.WriteLog("ch：" + err.Error())
-	}
-	return
-}
-
-func (node *Node) SaveRedis() (err error) {
-
-	var (
-		pipeStr []byte
-	)
-
-	//序列化
-	if pipeStr, err = json.Marshal(node); err != nil {
-		return
-	}
-
-	if _, err = manager.GRedis.Conn.Do("HMSET", "node", node.Host, pipeStr); err != nil {
-		manager.GLogMgr.WriteLog("节点保存进入数据库失败：" + err.Error())
-		return
-	}
-
-	return
-}
-
 func (n *Node) GetNode() (node *Node, err error) {
 	var (
 		data    interface{}
@@ -93,7 +67,6 @@ func (n *Node) GetNode() (node *Node, err error) {
 	if data, err = manager.GRedis.Conn.Do("HMGET", "node", n.Host); err != nil {
 		return nil, err
 	}
-	datas = data.([]interface{})
 	datas = data.([]interface{})
 	if datas[0] != nil {
 		nodeStr = datas[0].([]byte)
@@ -108,10 +81,6 @@ func (n *Node) GetNode() (node *Node, err error) {
 		}
 	}
 	return node, nil
-}
-
-func (node *Node) GetNodeByIp() (err error) {
-
 }
 
 //节点下线
@@ -144,5 +113,32 @@ func (node *Node) Offline() (err error) {
 		return
 	}
 
+	return
+}
+
+//获得所有node节点
+func (node *Node) GetAllNode() (list []*Node, err error) {
+	var (
+		data  interface{}
+		datas []interface{}
+		da    interface{}
+		n     *Node
+		dstr  []byte
+	)
+	list = make([]*Node, 0)
+	//从redis中获取
+	if data, err = manager.GRedis.Conn.Do("HVALS", "node"); err != nil {
+		return
+	}
+	datas = data.([]interface{})
+	for _, da = range datas {
+		dstr = da.([]byte)
+		n = &Node{}
+		//反序列化
+		if err = json.Unmarshal(dstr, n); err != nil {
+			return
+		}
+		list = append(list, n)
+	}
 	return
 }

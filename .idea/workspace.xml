@@ -2,17 +2,38 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9c924ce-fb3c-42e4-a4a1-9f2226d19cf9" name="Default Changelist" comment="增加创建任务接口">
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/master/server/NodeService.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/Node.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/pipeline_node.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/util/IpUtil.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/master/crontab.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/master/docs/docs.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/master/docs/swagger.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/master/docs/swagger.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/master/server/BanServer.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/CommandBan.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util/FileUtil.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/constants/Comstants.go" beforeDir="false" afterPath="$PROJECT_DIR$/constants/Comstants.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/Config.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/config/Config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/main/crontab.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/main/master.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/main/master.json" beforeDir="false" afterPath="$PROJECT_DIR$/master/config/master.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/DBManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/DBManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/JobManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/JobManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/LogMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/LogMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/MasterManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/MasterManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/RedisManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/RedisManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/manager/WorkMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/manager/WorkMgr.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/middleware/CorMiddleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/middleware/CorMiddleware.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/master/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/router/route.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/LogMgr.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/LogMgr.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/Register.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/RegisterManager.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker/main/Worker.go" beforeDir="false" afterPath="$PROJECT_DIR$/worker/main/Worker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/server/JobService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/JobService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/server/NodeService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/NodeService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/master/server/PipelineJobService.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/server/PipelineJobService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/File.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/File.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Node.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Node.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Pipeline.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/job.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/job.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/pipeline_node.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/pipeline_node.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/fileReader.go" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -68,25 +89,25 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
     <property name="go.vendoring.notification.had.been.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../wwcd/grpc-lb" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="goland.project.structure" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="F:\code\GOPATH\src\crontab\constants" />
-      <recent name="F:\code\GOPATH\src\crontab\master\server" />
-      <recent name="F:\code\GOPATH\src\crontab\master" />
-      <recent name="F:\code\GOPATH\src\crontab\master\main" />
-      <recent name="F:\code\GOPATH\src\crontab\master\middleware" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="F:\code\GOPATH\src\crontab\master\manager" />
       <recent name="F:\code\GOPATH\src\crontab\master\router" />
       <recent name="F:\code\GOPATH\src\crontab\common" />
       <recent name="F:\code\GOPATH\src\crontab\worker" />
       <recent name="F:\code\GOPATH\src\crontab\master\main\webroot" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\code\GOPATH\src\github.com\crontab\master\config" />
+      <recent name="F:\code\GOPATH\src\github.com\crontab\master" />
+      <recent name="F:\code\GOPATH\src\crontab\constants" />
+      <recent name="F:\code\GOPATH\src\crontab\master\server" />
+      <recent name="F:\code\GOPATH\src\crontab\master" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -101,29 +122,29 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build master.go">
-    <configuration name="go build crontab/master/main" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+  <component name="RunManager" selected="Go Build.go build github.com/crontab/master">
+    <configuration name="go build github.com/crontab/master" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="crontab" />
-      <working_directory value="$PROJECT_DIR$/master/main" />
-      <parameters value="gowatch" />
+      <working_directory value="$PROJECT_DIR$/master/" />
       <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/master/main/master.go" />
-      <package value="crontab/master/main" />
+      <filePath value="$PROJECT_DIR$/master/main/main.go" />
+      <package value="github.com/crontab/master" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="go build crontab/worker/main" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build github.com/crontab/worker/main" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="crontab" />
       <working_directory value="$PROJECT_DIR$/worker/main" />
       <kind value="PACKAGE" />
       <filePath value="$PROJECT_DIR$/worker/main/Worker.go" />
-      <package value="crontab/worker/main" />
+      <package value="github.com/crontab/worker/main" />
       <directory value="$PROJECT_DIR$/" />
+      <output_directory value="$PROJECT_DIR$/worker/main" />
       <method v="2" />
     </configuration>
     <configuration name="go build master.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="crontab" />
-      <working_directory value="$PROJECT_DIR$/" />
+      <working_directory value="$PROJECT_DIR$/master/main" />
       <kind value="FILE" />
       <filePath value="$PROJECT_DIR$/master/main/master.go" />
       <package value="github.com/crontab" />
@@ -131,14 +152,15 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Go Build.go build crontab/master/main" />
-      <item itemvalue="Go Build.go build crontab/worker/main" />
       <item itemvalue="Go Build.go build master.go" />
+      <item itemvalue="Go Build.go build github.com/crontab/worker/main" />
+      <item itemvalue="Go Build.go build github.com/crontab/master" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build github.com/crontab/master" />
         <item itemvalue="Go Build.go build master.go" />
-        <item itemvalue="Go Build.go build crontab/worker/main" />
+        <item itemvalue="Go Build.go build github.com/crontab/worker/main" />
       </list>
     </recent_temporary>
   </component>
@@ -171,11 +193,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/master/server/PipelineJobService.go</url>
-          <line>90</line>
-          <option name="timeStamp" value="106" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://C:/GoPath/src/github.com/jinzhu/gorm/callback_create.go</url>
           <line>25</line>
           <option name="timeStamp" value="113" />
@@ -184,6 +201,16 @@
           <url>file://C:/GoPath/src/github.com/jinzhu/gorm/main.go</url>
           <line>270</line>
           <option name="timeStamp" value="123" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/master/server/PipeLineService.go</url>
+          <line>325</line>
+          <option name="timeStamp" value="133" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/master/config/Config.go</url>
+          <line>47</line>
+          <option name="timeStamp" value="137" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

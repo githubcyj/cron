@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"github.com/crontab/master"
+	"github.com/crontab/master/config"
 	"github.com/sirupsen/logrus"
 	"os"
 )
@@ -24,12 +24,12 @@ func InitLogMgr() (err error) {
 	)
 
 	//获取文件信息
-	_, err = os.Stat(master.GConfig.LogFilepath + master.GConfig.LogFilename)
+	_, err = os.Stat(config.GConfig.LogFilepath + config.GConfig.LogFilename)
 
 	//判断文件是否存在
 	if os.IsNotExist(err) { //文件不存在
 		//创建文件
-		if file, err = os.Create(master.GConfig.LogFilepath + master.GConfig.LogFilename); err != nil { //文件创建失败
+		if file, err = os.Create(config.GConfig.LogFilepath + config.GConfig.LogFilename); err != nil { //文件创建失败
 			return
 		}
 	}
